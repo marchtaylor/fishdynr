@@ -1,0 +1,52 @@
+#' @name tilapia 
+#' @title Parameter list for Oreochromis niloticus (Nile tilapia)
+#' 
+#' @description The \code{tilapia} data set contains a list of parameters used by other functions
+#' in the \code{fishdynr} package. 
+#' \itemize{
+#'   \item species. Species name
+#'   \item growthFun. Name of growth function ("growth_VB" is von Bertalanffy growth function)
+#'   \item K. Growth constant (for use in von Bertalanffy growth function))
+#'   \item Linf. Infinite length (for use in von Bertalanffy growth function)
+#'   \item t0. (hypothetical) time when length equals zero (for use in von Bertalanffy growth function)
+#'   \item amax. Maximum age
+#'   \item LWa. Length-weight relationship parameter a (weight~a*length^b)
+#'   \item LWb. Length-weight relationship parameter b (weight~a*length^b)
+#'   \item M. Natural mortality
+#'   \item F. Fishing mortality
+#'   \item N0. Number of individuals at time 0
+#'   \item matFun. Name of maturity function ("pmat_w" is a logistic function that includes width, w, of quantiles)
+#'   \item Lmat. Length at maturity (i.e. where probability of being mature is 50%) 
+#'   (for use in "pmat_w" function)
+#'   \item wmat. Width of length between 25% and 75% maturity. Defines steepness
+#'   of transition from immature to mature (for use in "pmat_w" function) 
+#'   \item fec. Number of eggs produced per weight [g] of mature female 
+#'   \item selectFun. Function to use for gear selection. Determines lengths 
+#'   vulnerable to fishing mortality.
+#'   \item select_p1. Parameter 1 used in "gillnet" selectivity function
+#'   \item select_p2. Parameter 2 used in "gillnet" selectivity function
+#'   \item mesh_size. Mesh size [streched length in mm] used in "gillnet" selectivity function
+#'   \item mesh_size1. Mesh size of smallest reference net used in fitting "gillnet" selectivity function
+#'   \item select_dist. Distribution type used in "gillnet" selectivity function
+#'   \item knife_edge_size. Minimum length selected by "knife_edge" selectivity function
+#'   \item srrFun. Function used for stock-recruitment relationship
+#'   \item rmax. Maximum recruitment parameter used in "srrBH" stock-recruitment (Beverton-Holt)
+#'   \item beta. "beta" parameter used in "srrBH" stock-recruitment (Beverton-Holt)
+#' }
+#' 
+#' @docType data
+#' @format A list containing parameters used on other \code{fishdynr} functions
+#' @usage data(tilapia)
+#' @keywords datasets
+#' @examples
+#' 
+#' ### Ex 1. Plot of single month
+#' data(tilapia)
+#' res <- cohortSim(tilapia, t_incr=0.1)
+#' plot(pcap ~ Lt, res, t="l")
+#' plot(Lt ~ t, res, t="l")
+#' plot(Wt ~ t, res, t="l")
+#' plot(Bt ~ t, res, t="l")
+NULL
+
+
