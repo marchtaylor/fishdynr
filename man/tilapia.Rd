@@ -42,13 +42,9 @@ in the \code{fishdynr} package.
 }
 }
 \examples{
-### Ex 1. Plot of single month
 data(tilapia)
 res <- cohortSim(tilapia, t_incr=0.1)
-plot(pcap ~ Lt, res, t="l")
 plot(Lt ~ t, res, t="l")
-plot(Wt ~ t, res, t="l")
-plot(Bt ~ t, res, t="l")
 }
 \keyword{datasets}
 
