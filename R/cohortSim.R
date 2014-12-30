@@ -50,7 +50,6 @@
 #' 
 #' @export
 #' 
-#' 
 cohortSim <- function(params, t_incr=1){
 res <- params
 if(is.null(res$amax)) res$amax <- with(res, ceiling(log(-(0.95* Linf)/Linf + 1) / -K + t0))

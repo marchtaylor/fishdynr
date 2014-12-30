@@ -1,9 +1,10 @@
 Package: fishdynr
 Type: Package
-Title: What the package does (short line)
+Title: fishdynr
 Version: 1.0
 Date: 2014-12-26
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Marc Taylor
+Maintainer: Marc Taylor <ningkiling@gmail.com>
+Description: Fisheries science related population dynamics models
+License: MIT + file LICENSE
+URL: https://github.com/marchtaylor/fishdynr

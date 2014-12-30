@@ -39,7 +39,6 @@
 #' @usage data(tilapia)
 #' @keywords datasets
 #' @examples
-#' 
 #' ### Ex 1. Plot of single month
 #' data(tilapia)
 #' res <- cohortSim(tilapia, t_incr=0.1)
