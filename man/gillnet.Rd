@@ -27,7 +27,6 @@ normal (fixed width) and lognormal. [Note: others will be added]
 data(tilapia)
 tilapia$selectFun="gillnet"
 mesh_sizes <- c(60, 80, 100, 120)
-op <- par(mar=c(4,4,1,1))
 for(i in seq(mesh_sizes)){
   tilapia$mesh_size <- mesh_sizes[i]
   res <- cohortSim(tilapia, t_incr=0.01)
@@ -38,7 +37,6 @@ legend("topleft", legend=mesh_sizes,
   col=seq(mesh_sizes), lty=1,
   title="mesh size [mm]", bty="n"
 )
-par(op)
 }
 \references{
 Millar, R. B., & Holst, R. (1997).

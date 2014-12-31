@@ -4,7 +4,7 @@
 #' @param params List of parameters to use in function
 #' @param t_incr Value to use a time increment (in years). Defaults to 1.
 #' 
-#' @description \code{params} list should contain the following parameters:
+#' @details \code{params} list should contain the following parameters:
 #' \itemize{
 #'   \item species. Species name
 #'   \item growthFun. Name of growth function ("growth_VB" is von Bertalanffy growth function)

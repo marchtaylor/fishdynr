@@ -19,7 +19,6 @@ a rough estimate of trawl-type selectivity.
 data(tilapia)
 tilapia$selectFun="knife_edge"
 knife_edge_sizes <- c(20, 25, 30, 35)
-op <- par(mar=c(4,4,1,1))
 for(i in seq(knife_edge_sizes)){
   tilapia$knife_edge_size <- knife_edge_sizes[i]
   res <- cohortSim(tilapia, t_incr=0.01)
@@ -30,6 +29,5 @@ legend("topleft", legend=knife_edge_sizes,
   col=seq(knife_edge_sizes), lty=1,
   title="min. size", bty="n"
 )
-par(op)
 }
 

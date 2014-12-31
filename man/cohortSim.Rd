@@ -16,6 +16,31 @@ A list
 \description{
 \code{cohortSim} simulates a single cohort
 }
+\details{
+\code{params} list should contain the following parameters:
+\itemize{
+  \item species. Species name
+  \item growthFun. Name of growth function ("growth_VB" is von Bertalanffy growth function)
+  \item K. Growth constant (for use in von Bertalanffy growth function))
+  \item Linf. Infinite length (for use in von Bertalanffy growth function)
+  \item t0. (hypothetical) time when length equals zero (for use in von Bertalanffy growth function)
+  \item amax. Maximum age
+  \item LWa. Length-weight relationship parameter a (weight~a*length^b)
+  \item LWb. Length-weight relationship parameter b (weight~a*length^b)
+  \item M. Natural mortality
+  \item F. Fishing mortality
+  \item N0. Number of individuals at time 0
+  \item matFun. Name of maturity function ("pmat_w" is a logistic function that includes width, w, of quantiles)
+  \item Lmat. Length at maturity (i.e. where probability of being mature is 50%)
+  (for use in "pmat_w" function)
+  \item wmat. Width of length between 25% and 75% maturity. Defines steepness
+  of transition from immature to mature (for use in "pmat_w" function)
+  \item fec. Number of eggs produced per weight [g] of mature female
+  \item selectFun. Function to use for gear selection. Determines lengths
+  vulnerable to fishing mortality.
+  \item ... Other parameters for maturity and selectivity functions.
+}
+}
 \examples{
 data(tilapia)
 res <- cohortSim(tilapia, t_incr=.1)

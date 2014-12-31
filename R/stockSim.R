@@ -13,7 +13,7 @@
 #' @param envSt time series vector for environmental effects to half maximum recruitment
 #' parameter (e.g. \code{beta} in \code{\link[fishdynr]{srrBH}}) (default=1).
 #' 
-#' @description \code{params} list should contain the following parameters:
+#' @details \code{params} list should contain the following parameters:
 #' \itemize{
 #'   \item species. Species name
 #'   \item growthFun. Name of growth function ("growth_VB" is von Bertalanffy growth function)
@@ -51,10 +51,12 @@
 #' Ft <- rep(0.5, nyears); Ft[20:40] <- 1
 #' envKt <- rep(1, nyears); envKt[50:100] <- 0.5
 #' envSt <- runif(nyears, min=0.8, max=1.2)
-#' tmp <- stockSim(params, nyears=100, Ft=Ft, envKt=envKt, envSt=envSt)
+#' tmp <- stockSim(Ft=Ft, params=params, nyears=100, envKt=envKt, envSt=envSt)
 #' plot(tmp$Bt, t="l")
 #' plot(tmp$Yt, t="l")
-#' sum(tmp$Yt/1e6, na.rm=T)
+#' sum(tmp$Yt/1e6, na.rm=TRUE)
+#' 
+#' @export
 #' 
 stockSim <- function(params, nyears=100, Ft=0, envKt=1, envSt=1){
   params$F <- Ft[1]
@@ -69,7 +71,6 @@ stockSim <- function(params, nyears=100, Ft=0, envKt=1, envSt=1){
   Ntc[1,] <- res$Nt
   Ctc <- matrix(NaN, nrow=nyears, ncol=length(res$t))
   for(i in 2:nyears){
-    #i=2
     Neggs <- sum(Ntc[i-1,] * res$pmat * res$Neggst)
     args.incl <- which(names(res) %in% names(formals(get(res$srrFun))))
     Nrecr <- do.call( get(res$srrFun), list(rmax=res$rmax*envKt[i], beta=res$beta*envSt[i], Neggs=Neggs))  

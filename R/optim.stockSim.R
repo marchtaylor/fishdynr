@@ -1,6 +1,8 @@
 #' @title Optimization of fishing mortality
-#' @description \code{optim.stockSim} Sets up an optimization for fishing
-#'   mortality policy
+#' @description Sets up an exploration of optimum fishing policy using the function
+#' \code{\link[fishdynr]{stockSim}}
+#' (i.e. optimal time series of fishing mortalities, \code{Ft}, in order to maximize
+#' time series yield, \code{Yt})
 #'   
 #' @param Ft time series vector for fishing mortality. If a single value, then
 #'   the function assumes a constant fishing mortality for the entire simulation
@@ -31,31 +33,33 @@
 #' envKt <- rep(1, nyears); envKt[50:100] <- 0.5
 #' envSt <- runif(nyears, min=0.8, max=1.2)
 #' 
-#' # Optimization of Ft
+#' # Optimization of Ft (will take some time to reach cost function mimimum)
 #' out <- optim(
-#' par = Ft,  # initial guess
-#' fn = optim.stockSim,
-#' params = params,
-#' nyears = nyears,
-#' envKt = envKt,
-#' envSt = envSt,
-#' method = "L-BFGS-B",
-#' lower = 0,
-#' upper = 3,
-#' control = list(fnscale=-1, trace=4)
+#'   par = Ft,  # initial guess
+#'   fn = optim.stockSim,
+#'   params = params,
+#'   nyears = nyears,
+#'   envKt = envKt,
+#'   envSt = envSt,
+#'   method = "L-BFGS-B",
+#'   lower = 0,
+#'   upper = 3,
+#'   control = list(fnscale=-1, trace=4)
 #' )
 #' 
+#' # optimum Ft series
 #' plot(out$par, t="l")
 #' 
+#' # optimum Yt series
 #' tmp <- stockSim(params, nyears=100, Ft=out$par, envKt=envKt, envSt=envSt)
 #' plot(Yt ~ t, tmp, t="l")
 #' sum(tmp$Yt/1e6, na.rm=TRUE)
 #' 
+#' # optimum yield versus stock biomass
 #' plot(Yt ~ Bt, tmp)
 #' fit <- lm(Yt ~ Bt, tmp)
 #' abline(fit)
 #' summary(fit)
-#' xint <- -coef(fit)[1]/coef(fit)[2]
 #' plot(Bt ~ t, tmp, t="l", ylim=c(0, max(tmp$Bt)))
 #' lines(Yt ~ t, tmp, col=2)
 #' }
