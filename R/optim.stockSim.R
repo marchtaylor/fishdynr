@@ -2,7 +2,8 @@
 #' @description Sets up an exploration of optimum fishing policy using the function
 #' \code{\link[fishdynr]{stockSim}}
 #' (i.e. optimal time series of fishing mortalities, \code{Ft}, in order to maximize
-#' time series yield, \code{Yt})
+#' time series yield, \code{Yt}). The routine is described in further detail in 
+#' Walters and Martell (2004).
 #'   
 #' @param Ft time series vector for fishing mortality. If a single value, then
 #'   the function assumes a constant fishing mortality for the entire simulation
@@ -18,6 +19,10 @@
 #' @param envSt time series vector for environmental effects to half maximum
 #'   recruitment parameter (e.g. \code{beta} in \code{\link[fishdynr]{srrBH}})
 #'   (default=1).
+#'   
+#' @references
+#' Walters, C. J., Martell, S. J., 2004. 
+#' Fisheries ecology and management. Princeton University Press.
 #'   
 #' @examples
 #' \donttest{

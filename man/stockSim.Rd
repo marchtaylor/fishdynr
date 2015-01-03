@@ -23,6 +23,14 @@ parameter (e.g. \code{beta} in \code{\link[fishdynr]{srrBH}}) (default=1).}
 }
 \value{
 A list
+\itemize{
+  \item \code{Btc} matrix. Stock biomass by time (rows) and cohort (columns).
+  \item \code{Ytc} matrix. Fishery yield by time (rows) and cohort (columns).
+  \item \code{Bt} vector. Stock biomass by time.
+  \item \code{Yt} vector. Fishery yield by time.
+  \item \code{Nt} vector. Stock size (in numbers) by time.
+  \item \code{Ct} vector. Fishery catch (in numbers) by time.
+}
 }
 \description{
 \code{stockSim} simulates a stock using variable fishing mortality
@@ -31,27 +39,26 @@ and stock recruitment relationship
 \details{
 \code{params} list should contain the following parameters:
 \itemize{
-  \item species. Species name
-  \item growthFun. Name of growth function ("growth_VB" is von Bertalanffy growth function)
-  \item K. Growth constant (for use in von Bertalanffy growth function))
-  \item Linf. Infinite length (for use in von Bertalanffy growth function)
-  \item t0. (hypothetical) time when length equals zero (for use in von Bertalanffy growth function)
-  \item amax. Maximum age
-  \item LWa. Length-weight relationship parameter a (weight~a*length^b)
-  \item LWb. Length-weight relationship parameter b (weight~a*length^b)
-  \item M. Natural mortality
-  \item F. Fishing mortality
-  \item N0. Number of individuals at time 0
-  \item matFun. Name of maturity function ("pmat_w" is a logistic function that includes width, w, of quantiles)
-  \item Lmat. Length at maturity (i.e. where probability of being mature is 50%)
-  (for use in "pmat_w" function)
-  \item wmat. Width of length between 25% and 75% maturity. Defines steepness
-  of transition from immature to mature (for use in "pmat_w" function)
-  \item fec. Number of eggs produced per weight [g] of mature female
-  \item selectFun. Function to use for gear selection. Determines lengths
-  vulnerable to fishing mortality.
-  \item ... Other parameters for maturity and selectivity functions.
+  \item \code{species} Species name
+  \item \code{growthFun} Name of growth function (e.g. "growth_VB" is the von
+  Bertalanffy growth function)
+  \item \code{amax} Maximum age
+  \item \code{LWa} Length-weight relationship parameter a (weight~a*length^b)
+  \item \code{LWb} Length-weight relationship parameter b (weight~a*length^b)
+  \item \code{M} Natural mortality
+  \item \code{F} Fishing mortality
+  \item \code{N0} Number of individuals at time 0
+  \item \code{matFun} Name of maturity function (e.g. "pmat_w" is a logistic
+  function that includes width, w, of quantiles)
+  \item \code{selectFun} Function to use for gear selection. Determines lengths
+  vulnerable to fishing mortality (e.g. "gillnet" and "knife_edge" functions).
+  \item \code{srrFun} Stock-recruitment relationship function (e.g. "srrBH").
+  \item \code{fec} Number of eggs produced per weight [g] of mature female (For use in
+  srrFun).
+  \item \code{...} Other parameters for growth, maturity, and selectivity functions.
 }
+For fitting an optimal time series of fishing mortalities, \code{Ft}, see
+\code{\link[fishdynr]{optim.stockSim}} (Walters and Martell, 2004).
 }
 \examples{
 data(tilapia)
@@ -69,5 +76,9 @@ tmp <- stockSim(Ft=Ft, params=params, nyears=100, envKt=envKt, envSt=envSt)
 plot(tmp$Bt, t="l")
 plot(tmp$Yt, t="l")
 sum(tmp$Yt/1e6, na.rm=TRUE)
+}
+\references{
+Walters, C. J., Martell, S. J., 2004.
+Fisheries ecology and management. Princeton University Press.
 }
 

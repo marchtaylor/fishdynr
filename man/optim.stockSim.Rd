@@ -29,7 +29,8 @@ recruitment (e.g. \code{rmax} in \code{\link[fishdynr]{srrBH}})
 Sets up an exploration of optimum fishing policy using the function
 \code{\link[fishdynr]{stockSim}}
 (i.e. optimal time series of fishing mortalities, \code{Ft}, in order to maximize
-time series yield, \code{Yt})
+time series yield, \code{Yt}). The routine is described in further detail in
+Walters and Martell (2004).
 }
 \examples{
 \donttest{
@@ -75,5 +76,9 @@ summary(fit)
 plot(Bt ~ t, tmp, t="l", ylim=c(0, max(tmp$Bt)))
 lines(Yt ~ t, tmp, col=2)
 }
+}
+\references{
+Walters, C. J., Martell, S. J., 2004.
+Fisheries ecology and management. Princeton University Press.
 }
 

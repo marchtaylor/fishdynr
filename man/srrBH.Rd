@@ -14,6 +14,9 @@ half the maximum number of recruits, \code{rmax}}
 
 \item{Neggs}{number of eggs spawned by the adult population}
 }
+\value{
+Number of recruited individuals
+}
 \description{
 \code{srrBH} describes stock-recruitment relationship
 }

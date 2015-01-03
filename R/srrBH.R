@@ -6,6 +6,9 @@
 #' \code{beta} describes the point where the number of spawned eggs results in
 #' half the maximum number of recruits, \code{rmax}
 #' @param Neggs number of eggs spawned by the adult population
+#' 
+#' @return
+#' Number of recruited individuals
 #'   
 #' @examples
 #' Neggs <- seq(0,5e3,,100)
