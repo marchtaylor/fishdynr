@@ -28,15 +28,12 @@
 #' \donttest{
 #' data(tilapia)
 #' params <- tilapia
+#' params$N0 <- 1e8
 #' params$knife_edge_size <- 20
-#' params$rmax <- 1e6
-#' params$beta <- 1e9
-#' params$fec <- 100
-#' params$N0 <- 1e5
 #' nyears <- 100
-#' Ft <- rep(0.5, nyears); Ft[20:40] <- 1
-#' envKt <- rep(1, nyears); envKt[50:100] <- 0.5
-#' envSt <- runif(nyears, min=0.8, max=1.2)
+#' Ft <- rep(0.5, nyears)
+#' envKt <- rep(1, nyears); envKt[30:50] <- 0.5
+#' envSt <- runif(nyears, min=0.5, max=1.5)
 #' 
 #' # Optimization of Ft (will take some time to reach cost function mimimum)
 #' out <- optim(
@@ -56,7 +53,7 @@
 #' plot(out$par, t="l")
 #' 
 #' # optimum Yt series
-#' tmp <- stockSim(params, nyears=100, Ft=out$par, envKt=envKt, envSt=envSt)
+#' tmp <- stockSim(params, nyears=nyears, Ft=out$par, envKt=envKt, envSt=envSt)
 #' plot(Yt ~ t, tmp, t="l")
 #' sum(tmp$Yt/1e6, na.rm=TRUE)
 #' 

@@ -59,11 +59,10 @@ cohortSim <- function(params, t_incr=1){
   # Maturity
   args.incl <- which(names(res) %in% names(formals(get(res$matFun))))
   pmat <- do.call(get(res$matFun), res[args.incl])
-  Neggst <- Wt * pmat * res$fec/2
   # Prob. of capture
   args.incl <- which(names(res) %in% names(formals(get(res$selectFun))))
   pcap <- do.call(get(res$selectFun), res[args.incl])
-  #Numbers
+  # Numbers
   N0 <- res$N0; M <- res$M; F <- res$F
   Nt.noF <- with(res, N0 * exp(-M*t))
   Nt <- 0*t
@@ -98,7 +97,7 @@ cohortSim <- function(params, t_incr=1){
   res2 <- list(
     Wt=Wt,
     Nt=Nt, Nt.noF=Nt.noF, Bt=Bt,
-    pmat=pmat, Neggst=Neggst, pcap=pcap,
+    pmat=pmat, pcap=pcap,
     Ct=Ct, SBt=SBt, Yt=Yt,
     Lopt=Lopt,
     SB=SB, Y=Y,

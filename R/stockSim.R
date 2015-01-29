@@ -55,15 +55,12 @@
 #' data(tilapia)
 #' params <- tilapia
 #' params$knife_edge_size <- 20
-#' params$rmax <- 1e6
-#' params$beta <- 1e9
-#' params$fec <- 100
-#' params$N0 <- 1e5
-#' nyears <- 100
-#' Ft <- rep(0.5, nyears); Ft[20:40] <- 1
-#' envKt <- rep(1, nyears); envKt[50:100] <- 0.5
-#' envSt <- runif(nyears, min=0.8, max=1.2)
-#' tmp <- stockSim(Ft=Ft, params=params, nyears=100, envKt=envKt, envSt=envSt)
+#' params$N0 <- 1e8
+#' nyears <- 50
+#' Ft <- rep(0.5, nyears)
+#' envKt <- rep(1, nyears); envKt[20:35] <- 0.5
+#' envSt <- runif(nyears, min=0.5, max=1.5)
+#' tmp <- stockSim(Ft=Ft, params=params, nyears=nyears, envKt=envKt, envSt=envSt)
 #' plot(tmp$Bt, t="l")
 #' plot(tmp$Yt, t="l")
 #' sum(tmp$Yt/1e6, na.rm=TRUE)
@@ -81,11 +78,13 @@ stockSim <- function(params, nyears=100, Ft=0, envKt=1, envSt=1){
   subdiag <- which(row(L) == col(L) + 1) # position of subdiagonal
   Ntc <- matrix(0, nrow=nyears, ncol=length(res$t))
   Ntc[1,] <- res$Nt
+  Btc <- matrix(0, nrow=nyears, ncol=length(res$t))
+  Btc[1,] <- res$Bt
+  SBtc <- matrix(0, nrow=nyears, ncol=length(res$t))
+  SBtc[1,] <- res$SBt
   Ctc <- matrix(NaN, nrow=nyears, ncol=length(res$t))
   for(i in 2:nyears){
-    Neggs <- sum(Ntc[i-1,] * res$pmat * res$Neggst/2)
-    args.incl <- which(names(res) %in% names(formals(get(res$srrFun))))
-    Nrecr <- do.call( get(res$srrFun), list(rmax=res$rmax*envKt[i], beta=res$beta*envSt[i], Neggs=Neggs))  
+    Nrecr <- do.call( get(res$srrFun), args=list(rmax=params$rmax*envKt[i], beta=params$beta*envSt[i], SB=sum(SBtc[i-1,])))  
     Ft.i <- Ft[i]*res$pcap
     Zt.i <- res$M + Ft.i
     Mt.i <- Zt.i - Ft.i
@@ -95,19 +94,21 @@ stockSim <- function(params, nyears=100, Ft=0, envKt=1, envSt=1){
     Ntc.noF <- L %*% Ntc[i-1,]
     Ctc[i-1,] <- Ntc.noF - Ntc[i,]  
     Ntc[i,1] <- Nrecr
+    Btc[i,] <- Ntc[i,] * res$Wt
+    SBtc[i,] <- Btc[i,] * res$pmat
   }
   
-  Btc <- t(apply(Ntc, 1, function(x) x*res$Wt))
   Ytc <- t(apply(Ctc, 1, function(x) x*res$Wt))
   Bt <- rowSums(Btc, na.rm=TRUE)
+  SBt <- rowSums(SBtc, na.rm=TRUE)
   Yt <- rowSums(Ytc, na.rm=TRUE)
   Nt <- rowSums(Ntc, na.rm=TRUE)
   Ct <- rowSums(Ctc, na.rm=TRUE)
   
   res2 <- list(
     t=seq(nyears), Ft=Ft, envKt=envKt, envSt=envSt, 
-    Btc=Btc, Ntc=Ntc, Ctc=Ctc, Ytc=Ytc,
-    Bt=Bt, Nt=Nt, Ct=Ct, Yt=Yt
+    Btc=Btc, SBtc=SBtc, Ntc=Ntc, Ctc=Ctc, Ytc=Ytc,
+    Bt=Bt, SBt=SBt, Nt=Nt, Ct=Ct, Yt=Yt
   ) 
   return(res2)
 }
