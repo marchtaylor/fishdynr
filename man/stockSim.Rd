@@ -7,7 +7,7 @@
 stockSim(params, nyears = 100, Ft = 0, envKt = 1, envSt = 1)
 }
 \arguments{
-\item{params}{List of parameters to for the population. Applies a single cohort
+\item{params}{List of parameters for the population. Applies a single cohort
 simulation for the initial population state using \code{\link[fishdynr]{cohortSim}}
 function}
 

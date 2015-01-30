@@ -2,7 +2,7 @@
 #' @description \code{stockSim} simulates a stock using variable fishing mortality 
 #' and stock recruitment relationship
 #' 
-#' @param params List of parameters to for the population. Applies a single cohort
+#' @param params List of parameters for the population. Applies a single cohort
 #' simulation for the initial population state using \code{\link[fishdynr]{cohortSim}}
 #' function
 #' @param nyears number of years in the simulation
