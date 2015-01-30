@@ -9,7 +9,7 @@
 #' analysis. In the case of trawl-type selectivity, these should be levels for
 #' F and knife-edge length at capture. For gillnet-type selectivity, these should be
 #' levels for F and mesh_size.
-#'   
+#'    
 #' @examples
 #' # Trawl-type
 #' data(tilapia)
@@ -34,6 +34,7 @@
 #' image(x=res2$F, y=res2$mesh_size, z=res2$Y, col=pal(100))
 #' contour(x=res2$F, y=res2$mesh_size, z=res2$Y, add=TRUE)
 #' 
+#' @export
 #' 
 ypr <- function(params, adj.params){
   params$N0 <- 1
