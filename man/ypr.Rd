@@ -29,19 +29,38 @@ res <- ypr(params=tilapia, adj.params)
 pal <- colorRampPalette(c(
  rgb(1,0.5,0.5), rgb(1,1,0.5), rgb(0.5,1,1), rgb(0.5,0.5,1)
 ))
+op <- par(mfcol=c(1,2))
+# Yield
 image(x=res$F, y=res$knife_edge, z=res$Y, col=pal(100))
 contour(x=res$F, y=res$knife_edge, z=res$Y, add=TRUE)
+mtext("Yield", line=0.5, side=3)
+# Relative spawning biomass
+SB_F0 <- res$SB[which(res$F==0),1]
+image(x=res$F, y=res$knife_edge, z=res$SB/SB_F0, col=pal(100))
+contour(x=res$F, y=res$knife_edge, z=res$SB/SB_F0, add=TRUE)
+mtext("Rel. Spawning Biomass", line=0.5, side=3)
+par(op)
+
 
 # Gillnet-type
 data(tilapia)
 tilapia$selectFun <- "gillnet"
 n <- 30
 adj.params <- list(F=seq(0,3,,n), mesh_size=seq(60,160,,n))
-res2 <- ypr(params=tilapia, adj.params)
+res <- ypr(params=tilapia, adj.params)
 pal <- colorRampPalette(c(
  rgb(1,0.5,0.5), rgb(1,1,0.5), rgb(0.5,1,1), rgb(0.5,0.5,1)
 ))
-image(x=res2$F, y=res2$mesh_size, z=res2$Y, col=pal(100))
-contour(x=res2$F, y=res2$mesh_size, z=res2$Y, add=TRUE)
+op <- par(mfcol=c(1,2))
+# Yield
+image(x=res$F, y=res$knife_edge, z=res$Y, col=pal(100))
+contour(x=res$F, y=res$knife_edge, z=res$Y, add=TRUE)
+mtext("Yield", line=0.5, side=3)
+# Relative spawning biomass
+SB_F0 <- res$SB[which(res$F==0),1]
+image(x=res$F, y=res$knife_edge, z=res$SB/SB_F0, col=pal(100))
+contour(x=res$F, y=res$knife_edge, z=res$SB/SB_F0, add=TRUE)
+mtext("Rel. Spawning Biomass", line=0.5, side=3)
+par(op)
 }
 
