@@ -11,10 +11,15 @@ ypr(params, adj.params)
 simulation for the initial population state using \code{\link[fishdynr]{cohortSim}}
 function}
 
-\item{adj.params}{List of parameters combinations to use for yield per recruit
+\item{adj.params}{List of 2 parameters combinations to use for yield per recruit
 analysis. In the case of trawl-type selectivity, these should be levels for
 F and knife-edge length at capture. For gillnet-type selectivity, these should be
 levels for F and mesh_size.}
+}
+\value{
+A list of parameter combinations used in the yield-per-recruit
+exploration, plus matrix output for yield (\code{Y}) and spawning stock
+biomass (\code{SB}) given the parameter combinations (\code{adj.params.comb}).
 }
 \description{
 Sets up an yield-per-recruit exploration by adjusting fishing mortality
@@ -53,13 +58,13 @@ pal <- colorRampPalette(c(
 ))
 op <- par(mfcol=c(1,2))
 # Yield
-image(x=res$F, y=res$knife_edge, z=res$Y, col=pal(100))
-contour(x=res$F, y=res$knife_edge, z=res$Y, add=TRUE)
+image(x=res$F, y=res$mesh_size, z=res$Y, col=pal(100))
+contour(x=res$F, y=res$mesh_size, z=res$Y, add=TRUE)
 mtext("Yield", line=0.5, side=3)
 # Relative spawning biomass
 SB_F0 <- res$SB[which(res$F==0),1]
-image(x=res$F, y=res$knife_edge, z=res$SB/SB_F0, col=pal(100))
-contour(x=res$F, y=res$knife_edge, z=res$SB/SB_F0, add=TRUE)
+image(x=res$F, y=res$mesh_size, z=res$SB/SB_F0, col=pal(100))
+contour(x=res$F, y=res$mesh_size, z=res$SB/SB_F0, add=TRUE)
 mtext("Rel. Spawning Biomass", line=0.5, side=3)
 par(op)
 }
