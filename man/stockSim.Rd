@@ -4,7 +4,7 @@
 \alias{stockSim}
 \title{Simulation of a stock}
 \usage{
-stockSim(params, nyears = 100, Ft = 0, envKt = 1, envSt = 1)
+stockSim(params, nyears = 100, Ft = 0, env_at = 1, env_bt = 1)
 }
 \arguments{
 \item{params}{List of parameters for the population. Applies a single cohort
@@ -16,11 +16,11 @@ function}
 \item{Ft}{time series vector for fishing mortality. If a single value, then the function
 assumes a constant fishing mortality for the entire simulation (default=0)}
 
-\item{envKt}{time series vector for environmental effects to maximum recruitment
-(e.g. \code{rmax} in \code{\link[fishdynr]{srrBH}}) (default=1).}
+\item{env_at}{time series vector for environmental effects to maximum recruitment
+(e.g. \code{srrFecBH_a} in \code{\link[fishdynr]{srrFecBH}}) (default=1).}
 
-\item{envSt}{time series vector for environmental effects to half maximum recruitment
-parameter (e.g. \code{beta} in \code{\link[fishdynr]{srrBH}}) (default=1).}
+\item{env_bt}{time series vector for environmental effects to half maximum recruitment
+parameter (e.g. \code{srrFecBH_b} in \code{\link[fishdynr]{srrFecBH}}) (default=1).}
 }
 \value{
 A list
@@ -53,9 +53,9 @@ and stock recruitment relationship
   function that includes width, w, of quantiles)
   \item \code{selectFun} Function to use for gear selection. Determines lengths
   vulnerable to fishing mortality (e.g. "gillnet" and "knife_edge" functions).
-  \item \code{srrFun} Stock-recruitment relationship function (e.g. "srrBH").
+  \item \code{srrFun} Stock-recruitment relationship function (e.g. "srrFecBH").
   \item \code{fec} Number of eggs produced per weight [g] of mature female (For use in
-  srrFun).
+  srrFecFun).
   \item \code{...} Other parameters for growth, maturity, and selectivity functions.
 }
 For fitting an optimal time series of fishing mortalities, \code{Ft}, see
@@ -65,12 +65,12 @@ For fitting an optimal time series of fishing mortalities, \code{Ft}, see
 data(tilapia)
 params <- tilapia
 params$knife_edge_size <- 20
-params$N0 <- 1e8
+params$N0 <- 1e9
 nyears <- 50
 Ft <- rep(0.5, nyears)
-envKt <- rep(1, nyears); envKt[20:35] <- 0.5
-envSt <- runif(nyears, min=0.5, max=1.5)
-tmp <- stockSim(Ft=Ft, params=params, nyears=nyears, envKt=envKt, envSt=envSt)
+env_at <- runif(nyears, min=0.5, max=1.5)
+env_bt <- rep(1, nyears); env_bt[20:35] <- 0.5
+tmp <- stockSim(Ft=Ft, params=params, nyears=nyears, env_at=env_at, env_bt=env_bt)
 plot(tmp$Bt, t="l")
 plot(tmp$Yt, t="l")
 sum(tmp$Yt/1e6, na.rm=TRUE)

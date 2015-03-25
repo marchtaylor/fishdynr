@@ -8,10 +8,10 @@
 #' @param nyears number of years in the simulation
 #' @param Ft time series vector for fishing mortality. If a single value, then the function
 #' assumes a constant fishing mortality for the entire simulation (default=0)
-#' @param envKt time series vector for environmental effects to maximum recruitment 
-#' (e.g. \code{rmax} in \code{\link[fishdynr]{srrBH}}) (default=1).
-#' @param envSt time series vector for environmental effects to half maximum recruitment
-#' parameter (e.g. \code{beta} in \code{\link[fishdynr]{srrBH}}) (default=1).
+#' @param env_at time series vector for environmental effects to maximum recruitment 
+#' (e.g. \code{srrFecBH_a} in \code{\link[fishdynr]{srrFecBH}}) (default=1).
+#' @param env_bt time series vector for environmental effects to half maximum recruitment
+#' parameter (e.g. \code{srrFecBH_b} in \code{\link[fishdynr]{srrFecBH}}) (default=1).
 #' 
 #' @details \code{params} list should contain the following parameters:
 #' \itemize{
@@ -28,9 +28,9 @@
 #'   function that includes width, w, of quantiles)
 #'   \item \code{selectFun} Function to use for gear selection. Determines lengths 
 #'   vulnerable to fishing mortality (e.g. "gillnet" and "knife_edge" functions).
-#'   \item \code{srrFun} Stock-recruitment relationship function (e.g. "srrBH").
+#'   \item \code{srrFun} Stock-recruitment relationship function (e.g. "srrFecBH").
 #'   \item \code{fec} Number of eggs produced per weight [g] of mature female (For use in
-#'   srrFun).
+#'   srrFecFun).
 #'   \item \code{...} Other parameters for growth, maturity, and selectivity functions.
 #' }
 #' For fitting an optimal time series of fishing mortalities, \code{Ft}, see
@@ -55,24 +55,24 @@
 #' data(tilapia)
 #' params <- tilapia
 #' params$knife_edge_size <- 20
-#' params$N0 <- 1e8
+#' params$N0 <- 1e9
 #' nyears <- 50
 #' Ft <- rep(0.5, nyears)
-#' envKt <- rep(1, nyears); envKt[20:35] <- 0.5
-#' envSt <- runif(nyears, min=0.5, max=1.5)
-#' tmp <- stockSim(Ft=Ft, params=params, nyears=nyears, envKt=envKt, envSt=envSt)
+#' env_at <- runif(nyears, min=0.5, max=1.5)
+#' env_bt <- rep(1, nyears); env_bt[20:35] <- 0.5
+#' tmp <- stockSim(Ft=Ft, params=params, nyears=nyears, env_at=env_at, env_bt=env_bt)
 #' plot(tmp$Bt, t="l")
 #' plot(tmp$Yt, t="l")
 #' sum(tmp$Yt/1e6, na.rm=TRUE)
 #' 
 #' @export
 #' 
-stockSim <- function(params, nyears=100, Ft=0, envKt=1, envSt=1){
+stockSim <- function(params, nyears=100, Ft=0, env_at=1, env_bt=1){
   params$F <- Ft[1]
   res <- cohortSim(params, t_incr=1) # initial stock size
   if(length(Ft)==1) Ft <- rep(Ft, nyears)
-  if(length(envKt)==1) envKt <- rep(envKt, nyears)
-  if(length(envSt)==1) envSt <- rep(envSt, nyears)
+  if(length(env_at)==1) env_at <- rep(env_at, nyears)
+  if(length(env_bt)==1) env_bt <- rep(env_bt, nyears)
   
   L <- matrix(0, length(res$t), length(res$t)) # Leslie matrix
   subdiag <- which(row(L) == col(L) + 1) # position of subdiagonal
@@ -82,9 +82,11 @@ stockSim <- function(params, nyears=100, Ft=0, envKt=1, envSt=1){
   Btc[1,] <- res$Bt
   SBtc <- matrix(0, nrow=nyears, ncol=length(res$t))
   SBtc[1,] <- res$SBt
+  Fectc <- matrix(0, nrow=nyears, ncol=length(res$t))
+  Fectc[1,] <- res$Neggst * res$Nt * res$pmat * res$nspawn * res$p_female
   Ctc <- matrix(NaN, nrow=nyears, ncol=length(res$t))
   for(i in 2:nyears){
-    Nrecr <- do.call( get(res$srrFun), args=list(rmax=params$rmax*envKt[i], beta=params$beta*envSt[i], SB=sum(SBtc[i-1,])))  
+    Nrecr <- do.call(get(res$srrFun), args=list(srrFecBH_a=params$srrFecBH_a*env_at[i], srrFecBH_b=params$srrFecBH_b*env_bt[i], neggs=sum(Fectc[i-1,])))  
     Ft.i <- Ft[i]*res$pcap
     Zt.i <- res$M + Ft.i
     Mt.i <- Zt.i - Ft.i
@@ -96,6 +98,7 @@ stockSim <- function(params, nyears=100, Ft=0, envKt=1, envSt=1){
     Ntc[i,1] <- Nrecr
     Btc[i,] <- Ntc[i,] * res$Wt
     SBtc[i,] <- Btc[i,] * res$pmat
+    Fectc[i,] <- res$Neggst * 4 * Ntc[i,] * res$pmat
   }
   
   Ytc <- t(apply(Ctc, 1, function(x) x*res$Wt))
@@ -103,12 +106,13 @@ stockSim <- function(params, nyears=100, Ft=0, envKt=1, envSt=1){
   SBt <- rowSums(SBtc, na.rm=TRUE)
   Yt <- rowSums(Ytc, na.rm=TRUE)
   Nt <- rowSums(Ntc, na.rm=TRUE)
+  Fect <- rowSums(Fectc, na.rm=TRUE)
   Ct <- rowSums(Ctc, na.rm=TRUE)
   
   res2 <- list(
-    t=seq(nyears), Ft=Ft, envKt=envKt, envSt=envSt, 
-    Btc=Btc, SBtc=SBtc, Ntc=Ntc, Ctc=Ctc, Ytc=Ytc,
-    Bt=Bt, SBt=SBt, Nt=Nt, Ct=Ct, Yt=Yt
+    t=seq(nyears), Ft=Ft, env_at=env_at, env_bt=env_bt, 
+    Btc=Btc, SBtc=SBtc, Ntc=Ntc, Fectc=Fectc, Ctc=Ctc, Ytc=Ytc,
+    Bt=Bt, SBt=SBt, Nt=Nt, Fect=Fect, Ct=Ct, Yt=Yt
   ) 
   return(res2)
 }

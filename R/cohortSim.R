@@ -80,6 +80,11 @@ cohortSim <- function(params, t_incr=1){
   Bt.noF <- Nt.noF * Wt
   #Spawning pop biomass and fecundity
   SBt <- Bt*pmat
+  #Fecundity
+  if(!is.null(res$fecFun)){
+    args.incl <- which(names(res) %in% names(formals(get(res$fecFun))))
+    res$Neggst <- do.call(get(res$fecFun), args=c(res[args.incl], list(Wt=Wt)))
+  }
   #Optimal length
   Lopt <- Lt[which.max(Bt.noF)]
   Lopt.plus_minus_10 <- c(Lopt-Lopt*0.1, Lopt+Lopt*0.1)

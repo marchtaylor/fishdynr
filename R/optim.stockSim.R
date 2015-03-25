@@ -13,12 +13,14 @@
 #'   \code{\link[fishdynr]{cohortSim}} function. See
 #'   \code{\link[fishdynr]{stockSim}} for details.
 #' @param nyears number of years in the simulation
-#' @param envKt time series vector for environmental effects to maximum
-#'   recruitment (e.g. \code{rmax} in \code{\link[fishdynr]{srrBH}})
+#' @param env_at time series vector for environmental effects to maximum
+#'   recruitment (e.g. \code{srrFecBH_a} in \code{\link[fishdynr]{srrFecBH}})
 #'   (default=1).
-#' @param envSt time series vector for environmental effects to half maximum
-#'   recruitment parameter (e.g. \code{beta} in \code{\link[fishdynr]{srrBH}})
+#' @param env_bt time series vector for environmental effects to maximum
+#'   recruitment (e.g. \code{srrFecBH_b} in \code{\link[fishdynr]{srrFecBH}})
 #'   (default=1).
+#' @param opt what should be optimized ("sum", "sum.log", "sum.disc")
+#' @param disc.rate discount rate (default = 0.02)
 #'   
 #' @references
 #' Walters, C. J., Martell, S. J., 2004. 
@@ -26,14 +28,16 @@
 #'   
 #' @examples
 #' \donttest{
+#' set.seed(1)
 #' data(tilapia)
 #' params <- tilapia
-#' params$N0 <- 1e8
 #' params$knife_edge_size <- 20
-#' nyears <- 100
+#' params$N0 <- 1e9
+#' nyears <- 50
 #' Ft <- rep(0.5, nyears)
-#' envKt <- rep(1, nyears); envKt[30:50] <- 0.5
-#' envSt <- runif(nyears, min=0.5, max=1.5)
+#' env_at <- runif(nyears, min=0.5, max=1.5)
+#' env_bt <- rep(1, nyears); env_bt[20:35] <- 0.5
+#' 
 #' 
 #' # Optimization of Ft (will take some time to reach cost function mimimum)
 #' out <- optim(
@@ -41,11 +45,12 @@
 #'   fn = optim.stockSim,
 #'   params = params,
 #'   nyears = nyears,
-#'   envKt = envKt,
-#'   envSt = envSt,
+#'   env_at = env_at,
+#'   env_bt = env_bt,
+#'   opt = "sum.log", # optimize the sum of log yield
 #'   method = "L-BFGS-B",
 #'   lower = 0,
-#'   upper = 3,
+#'   upper = 2,
 #'   control = list(fnscale=-1, trace=4)
 #' )
 #' 
@@ -53,7 +58,7 @@
 #' plot(out$par, t="l")
 #' 
 #' # optimum Yt series
-#' tmp <- stockSim(params, nyears=nyears, Ft=out$par, envKt=envKt, envSt=envSt)
+#' tmp <- stockSim(params, nyears=nyears, Ft=out$par, env_at=env_at, env_bt=env_bt)
 #' plot(Yt ~ t, tmp, t="l")
 #' sum(tmp$Yt/1e6, na.rm=TRUE)
 #' 
@@ -68,7 +73,11 @@
 #' 
 #' @export
 #' 
-optim.stockSim <- function(Ft=0, params, nyears=100, envKt=1, envSt=1){
-  res <- stockSim(params=params, nyears=nyears, Ft=Ft, envKt=envKt, envSt=envSt)
-  sum(res$Yt, na.rm=TRUE)
+optim.stockSim <- function(Ft=0, params, nyears=100, env_at=1, env_bt=1, opt="sum", disc.rate=0.02){
+  res <- stockSim(params=params, nyears=nyears, Ft=Ft, env_at=env_at, env_bt=env_bt)
+  incl <- which(res$Yt>0)
+  if(opt == "sum") tmp <- sum((res$Yt[incl]), na.rm=TRUE)
+  if(opt == "sum.log") tmp <- sum(log(res$Yt[incl]), na.rm=TRUE)
+  if(opt == "sum.disc") tmp <- sum((res$Yt / ((1+disc.rate)^(nyears:1)))[incl], na.rm=TRUE)
+  return(tmp)
 }

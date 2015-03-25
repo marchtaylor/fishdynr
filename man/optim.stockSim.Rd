@@ -4,7 +4,8 @@
 \alias{optim.stockSim}
 \title{Optimization of fishing mortality}
 \usage{
-optim.stockSim(Ft = 0, params, nyears = 100, envKt = 1, envSt = 1)
+optim.stockSim(Ft = 0, params, nyears = 100, env_at = 1, env_bt = 1,
+  opt = "sum", disc.rate = 0.02)
 }
 \arguments{
 \item{Ft}{time series vector for fishing mortality. If a single value, then
@@ -18,13 +19,17 @@ cohort simulation for the initial population state using
 
 \item{nyears}{number of years in the simulation}
 
-\item{envKt}{time series vector for environmental effects to maximum
-recruitment (e.g. \code{rmax} in \code{\link[fishdynr]{srrBH}})
+\item{env_at}{time series vector for environmental effects to maximum
+recruitment (e.g. \code{srrFecBH_a} in \code{\link[fishdynr]{srrFecBH}})
 (default=1).}
 
-\item{envSt}{time series vector for environmental effects to half maximum
-  recruitment parameter (e.g. \code{beta} in \code{\link[fishdynr]{srrBH}})
-  (default=1).}
+\item{env_bt}{time series vector for environmental effects to maximum
+recruitment (e.g. \code{srrFecBH_b} in \code{\link[fishdynr]{srrFecBH}})
+(default=1).}
+
+\item{opt}{what should be optimized ("sum", "sum.log", "sum.disc")}
+
+\item{disc.rate}{discount rate (default = 0.02)}
 }
 \description{
 Sets up an exploration of optimum fishing policy using the function
@@ -35,14 +40,16 @@ Walters and Martell (2004).
 }
 \examples{
 \donttest{
+set.seed(1)
 data(tilapia)
 params <- tilapia
-params$N0 <- 1e8
 params$knife_edge_size <- 20
-nyears <- 100
+params$N0 <- 1e9
+nyears <- 50
 Ft <- rep(0.5, nyears)
-envKt <- rep(1, nyears); envKt[30:50] <- 0.5
-envSt <- runif(nyears, min=0.5, max=1.5)
+env_at <- runif(nyears, min=0.5, max=1.5)
+env_bt <- rep(1, nyears); env_bt[20:35] <- 0.5
+
 
 # Optimization of Ft (will take some time to reach cost function mimimum)
 out <- optim(
@@ -50,11 +57,12 @@ out <- optim(
   fn = optim.stockSim,
   params = params,
   nyears = nyears,
-  envKt = envKt,
-  envSt = envSt,
+  env_at = env_at,
+  env_bt = env_bt,
+  opt = "sum.log", # optimize the sum of log yield
   method = "L-BFGS-B",
   lower = 0,
-  upper = 3,
+  upper = 2,
   control = list(fnscale=-1, trace=4)
 )
 
@@ -62,7 +70,7 @@ out <- optim(
 plot(out$par, t="l")
 
 # optimum Yt series
-tmp <- stockSim(params, nyears=nyears, Ft=out$par, envKt=envKt, envSt=envSt)
+tmp <- stockSim(params, nyears=nyears, Ft=out$par, env_at=env_at, env_bt=env_bt)
 plot(Yt ~ t, tmp, t="l")
 sum(tmp$Yt/1e6, na.rm=TRUE)
 
