@@ -98,7 +98,7 @@ stockSim <- function(params, nyears=100, Ft=0, env_at=1, env_bt=1){
     Ntc[i,1] <- Nrecr
     Btc[i,] <- Ntc[i,] * res$Wt
     SBtc[i,] <- Btc[i,] * res$pmat
-    Fectc[i,] <- res$Neggst * 4 * Ntc[i,] * res$pmat
+    Fectc[i,] <- res$Neggst * Ntc[i,] * res$pmat * res$nspawn * res$p_female
   }
   
   Ytc <- t(apply(Ctc, 1, function(x) x*res$Wt))

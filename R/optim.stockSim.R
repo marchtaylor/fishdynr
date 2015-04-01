@@ -78,6 +78,6 @@ optim.stockSim <- function(Ft=0, params, nyears=100, env_at=1, env_bt=1, opt="su
   incl <- which(res$Yt>0)
   if(opt == "sum") tmp <- sum((res$Yt[incl]), na.rm=TRUE)
   if(opt == "sum.log") tmp <- sum(log(res$Yt[incl]), na.rm=TRUE)
-  if(opt == "sum.disc") tmp <- sum((res$Yt / ((1+disc.rate)^(nyears:1)))[incl], na.rm=TRUE)
+  if(opt == "sum.disc") tmp <- sum(((1-disc.rate)^seq(res$t))*res$Yt)
   return(tmp)
 }
