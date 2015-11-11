@@ -22,7 +22,7 @@ a rough estimate of trawl-type selectivity.
 data(tilapia)
 tilapia$selectFun="logisticSelect"
 tilapia$L50 <- 20
-WQS <- c(3, 5, 7)
+WQS <- c(0, 3, 6)
 COL <- rainbow(3)
 for(i in seq(WQS)){
   tilapia$wqs <- WQS[i]
@@ -30,7 +30,7 @@ for(i in seq(WQS)){
   if(i == 1) plot(pcap ~ Lt, res, t="n")
   lines(pcap ~ Lt, res, col=COL[i])
 }
-legend("topleft", legend=WQS, 
+legend("bottomright", legend=paste(WQS, c(" ('knife-edge')", "", ""), sep=""), 
   col=COL, lty=1, 
   title="Width between 25\% and 75\%", bty="n"
 )

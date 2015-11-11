@@ -11,7 +11,7 @@ fecW_LM(fec_a = 0, fec_b = 1, Wt = 500)
 
 \item{fec_b}{slope}
 
-\item{W}{individual weight (from \code{cohortSim} function)}
+\item{Wt}{individual weight (from \code{cohortSim} function)}
 }
 \value{
 Number of eggs per individual

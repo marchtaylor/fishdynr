@@ -4,7 +4,7 @@
 #' 
 #' @param fec_a intercept
 #' @param fec_b slope
-#' @param W individual weight (from \code{cohortSim} function)
+#' @param Wt individual weight (from \code{cohortSim} function)
 #' 
 #' @return
 #' Number of eggs per individual
