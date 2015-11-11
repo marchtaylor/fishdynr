@@ -8,3 +8,4 @@ Maintainer: Marc Taylor <ningkiling@gmail.com>
 Description: Fisheries science related population dynamics models
 License: MIT + file LICENSE
 URL: https://github.com/marchtaylor/fishdynr
+RoxygenNote: 5.0.1
