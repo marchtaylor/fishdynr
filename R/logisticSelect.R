@@ -5,7 +5,7 @@
 #'  
 #' @param Lt body size
 #' @param L50 length at first capture (i.e. where prob. of capture equals 50\%)
-#' @param wqs width between 25\% and 75\%  probability of capture
+#' @param wqs width between 25\% and 75\% probability of capture
 #'    
 #' @examples
 #' data(tilapia)
