@@ -11,7 +11,7 @@ logisticSelect(Lt, L50, wqs)
 
 \item{L50}{length at first capture (i.e. where prob. of capture equals 50\%)}
 
-\item{wqs}{width between 25\% and 75\%  probability of capture}
+\item{wqs}{width of quartiles between 25\% and 75\% probability of capture}
 }
 \description{
 \code{logisticSelect} describes knife-edge selection where 

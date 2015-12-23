@@ -64,14 +64,14 @@ cohortSim <- function(params, t_incr=1){
   pcap <- do.call(get(res$selectFun), res[args.incl])
   # Numbers
   N0 <- res$N0; M <- res$M; F <- res$F
-  Nt.noF <- with(res, N0 * exp(-M*t))
+  Nt.noF <- N0 * exp(-M*t)
   Nt <- 0*t
   Nt[1] <- N0
   Ct <- 0*t
   Nt[1] <- N0
   for(i in 2:length(t)){
     Nt[i] <- Nt[i-1] * exp(-(M + F*pcap[i]) * (t[i]-t[i-1]))
-    Ct[i-1] <- Nt[i-1] * (1 - exp(-(F*pcap[i]) * (t[i]-t[i-1])))
+    Ct[i-1] <- ((F*pcap[i])/(M + F*pcap[i])) * (Nt[i-1] * (1 - exp(-(M + F*pcap[i]) * (t[i]-t[i-1])))) # Baranov catch equation
   }
   #Yield
   Yt <- Ct * Wt

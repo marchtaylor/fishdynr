@@ -58,6 +58,7 @@
 #' params$N0 <- 1e9
 #' nyears <- 50
 #' Ft <- rep(0.5, nyears)
+#' set.seed(1)
 #' env_at <- runif(nyears, min=0.5, max=1.5)
 #' env_bt <- rep(1, nyears); env_bt[20:35] <- 0.5
 #' tmp <- stockSim(Ft=Ft, params=params, nyears=nyears, env_at=env_at, env_bt=env_bt)
@@ -85,16 +86,15 @@ stockSim <- function(params, nyears=100, Ft=0, env_at=1, env_bt=1){
   Fectc <- matrix(0, nrow=nyears, ncol=length(res$t))
   Fectc[1,] <- res$Neggst * res$Nt * res$pmat * res$nspawn * res$p_female
   Ctc <- matrix(NaN, nrow=nyears, ncol=length(res$t))
+  Ctc[1,] <- res$Ct
   for(i in 2:nyears){
-    Nrecr <- do.call(get(res$srrFun), args=list(srrFecBH_a=params$srrFecBH_a*env_at[i], srrFecBH_b=params$srrFecBH_b*env_bt[i], neggs=sum(Fectc[i-1,])))  
     Ft.i <- Ft[i]*res$pcap
     Zt.i <- res$M + Ft.i
     Mt.i <- Zt.i - Ft.i
     L[subdiag] <- exp(-Zt.i)[-length(Zt.i)] # subdiagonal substitution of survivorship values (gx's)
     Ntc[i,] <- L %*% Ntc[i-1,]
-    L[subdiag] <- exp(-Mt.i)[-length(Mt.i)] # subdiagonal substitution of survivorship values (gx's)
-    Ntc.noF <- L %*% Ntc[i-1,]
-    Ctc[i-1,] <- Ntc.noF - Ntc[i,]  
+    Ctc[i,] <- ( ((Ft.i*res$pcap)/(Mt.i + Ft.i*res$pcap)) * (1 - exp(-Zt.i)) )  * Ntc[i,] # Baranov catch equation
+    Nrecr <- do.call(get(res$srrFun), args=list(srrFecBH_a=params$srrFecBH_a*env_at[i], srrFecBH_b=params$srrFecBH_b*env_bt[i], neggs=sum(Fectc[i-1,])))
     Ntc[i,1] <- Nrecr
     Btc[i,] <- Ntc[i,] * res$Wt
     SBtc[i,] <- Btc[i,] * res$pmat

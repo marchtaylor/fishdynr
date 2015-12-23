@@ -19,12 +19,14 @@
 #'   if(i == 1) plot(pcap ~ Lt, res, t="n")
 #'   lines(pcap ~ Lt, res, col=COL[i])
 #' }
-#' legend("bottomright", legend=paste(WQS, c(" ('knife-edge')", "", ""), sep=""), 
-#'   col=COL, lty=1, 
-#'   title="Width between 25% and 75%", bty="n"
+#' legend("bottomright", 
+#'        legend=paste(WQS, c(" ('knife-edge')", "", ""), sep=""), 
+#'        col=COL, lty=1, 
+#'        title="Width between 0.25 and 0.75 quantiles", bty="n"
 #' )
 #' lines(c(0,tilapia$L50,tilapia$L50), c(0.5,0.5,0), col=1, lty=2)
 #' text(20,.5,bquote("L"[50]), pos=4, col=1, font=1)
+#' 
 #' 
 #' @export
 #' 

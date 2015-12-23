@@ -68,6 +68,7 @@ params$knife_edge_size <- 20
 params$N0 <- 1e9
 nyears <- 50
 Ft <- rep(0.5, nyears)
+set.seed(1)
 env_at <- runif(nyears, min=0.5, max=1.5)
 env_bt <- rep(1, nyears); env_bt[20:35] <- 0.5
 tmp <- stockSim(Ft=Ft, params=params, nyears=nyears, env_at=env_at, env_bt=env_bt)
