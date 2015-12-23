@@ -47,6 +47,7 @@ params$knife_edge_size <- 20
 params$N0 <- 1e9
 nyears <- 50
 Ft <- rep(0.5, nyears)
+set.seed(1)
 env_at <- runif(nyears, min=0.5, max=1.5)
 env_bt <- rep(1, nyears); env_bt[20:35] <- 0.5
 
@@ -79,8 +80,14 @@ plot(Yt ~ Bt, tmp)
 fit <- lm(Yt ~ Bt, tmp)
 abline(fit)
 summary(fit)
+
+op <- par(mar=c(4,4,1,4))
 plot(Bt ~ t, tmp, t="l", ylim=c(0, max(tmp$Bt)))
-lines(Yt ~ t, tmp, col=2)
+par(new=TRUE)
+plot(Yt ~ t, tmp, col=2, t="l", axes=FALSE, xlab="", ylab="")
+axis(4, col=2)
+mtext("Yt", side=4, line=3, col=2)
+par(op)
 }
 
 }
