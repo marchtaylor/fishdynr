@@ -93,7 +93,7 @@ stockSim <- function(params, nyears=100, Ft=0, env_at=1, env_bt=1){
     Mt.i <- Zt.i - Ft.i
     L[subdiag] <- exp(-Zt.i)[-length(Zt.i)] # subdiagonal substitution of survivorship values (gx's)
     Ntc[i,] <- L %*% Ntc[i-1,]
-    Ctc[i,] <- ( ((Ft.i*res$pcap)/(Mt.i + Ft.i*res$pcap)) * (1 - exp(-Zt.i)) )  * Ntc[i,] # Baranov catch equation
+    Ctc[i,] <- ( ((Ft.i)/(Mt.i + Ft.i)) * (1 - exp(-Zt.i)) )  * Ntc[i,] # Baranov catch equation
     Nrecr <- do.call(get(res$srrFun), args=list(srrFecBH_a=params$srrFecBH_a*env_at[i], srrFecBH_b=params$srrFecBH_b*env_bt[i], neggs=sum(Fectc[i-1,])))
     Ntc[i,1] <- Nrecr
     Btc[i,] <- Ntc[i,] * res$Wt
