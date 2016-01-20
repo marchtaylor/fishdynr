@@ -16,7 +16,8 @@ growth_soVB(Linf, K, t, t0, ts, C)
 \item{t0}{(hypothetical) age at length zero}
 
 \item{ts}{summer point. Time of year (between 0 and 1) when growth oscillation
-cycle begins (sine wave term becomes positive)}
+cycle begins (sine wave term becomes positive). Note that this definition 
+differs from some interpretations of the model (see Somers 1998)}
 
 \item{C}{oscillation strength. Varies between 0 and 1.}
 }

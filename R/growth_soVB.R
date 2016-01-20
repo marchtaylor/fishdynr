@@ -7,7 +7,8 @@
 #' @param t age 
 #' @param t0 (hypothetical) age at length zero
 #' @param ts summer point. Time of year (between 0 and 1) when growth oscillation
-#' cycle begins (sine wave term becomes positive)
+#' cycle begins (sine wave term becomes positive). Note that this definition 
+#' differs from some interpretations of the model (see Somers 1998)
 #' @param C oscillation strength. Varies between 0 and 1.
 #' 
 #'   

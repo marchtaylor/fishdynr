@@ -12,7 +12,8 @@ dt_growth_soVB(Linf, K, ts, C, L1, t1, t2)
 \item{K}{growth constant}
 
 \item{ts}{summer point. Time of year (between 0 and 1) when growth oscillation
-cycle begins (sine wave term becomes positive)}
+cycle begins (sine wave term becomes positive). Note that this definition 
+differs from some interpretations of the model (see Somers 1998)}
 
 \item{C}{oscillation strength. Varies between 0 and 1}
 
@@ -35,7 +36,7 @@ ts = 0.5
 C = 0.75
 
 # create dataframe
-df <- data.frame(t = seq(0,5,0.1), L=NaN)
+df <- data.frame(t = seq(0,5,0.2), L=NaN)
 df$L[1] <- 10 # intial size
 
 # run iterative model
