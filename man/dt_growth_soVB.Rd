@@ -14,7 +14,7 @@ dt_growth_soVB(Linf, K, ts, C, L1, t1, t2)
 \item{ts}{summer point. Time of year (between 0 and 1) when growth oscillation
 cycle begins (sine wave term becomes positive)}
 
-\item{C}{oscillation strength. Varies between 0 and 1.}
+\item{C}{oscillation strength. Varies between 0 and 1}
 
 \item{L1}{Length at t1}
 
