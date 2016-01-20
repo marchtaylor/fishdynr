@@ -7,7 +7,7 @@
 #' @param K growth constant
 #' @param ts summer point. Time of year (between 0 and 1) when growth oscillation
 #' cycle begins (sine wave term becomes positive)
-#' @param C oscillation strength. Varies between 0 and 1.
+#' @param C oscillation strength. Varies between 0 and 1
 #' @param L1 Length at t1
 #' @param t1 time 1
 #' @param t2 time 2
