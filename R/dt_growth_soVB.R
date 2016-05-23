@@ -15,7 +15,7 @@
 #' 
 #'   
 #' @examples
-#' # growth parameters
+#' # Growth parameters
 #' Linf = 100
 #' K = 0.5
 #' ts = 0.5
