@@ -29,7 +29,7 @@ length at time 1 according to the seasonally oscillationg
 von Bertalanffy growth function
 }
 \examples{
-# growth parameters
+# Growth parameters
 Linf = 100
 K = 0.5
 ts = 0.5
