@@ -6,11 +6,11 @@
 \usage{
 lfqGen(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
   Linf.cv = 0.1, ts = 0, C = 0.85, LWa = 0.01, LWb = 3, Lmat = 0.5 *
-  Linf.mu, wmat = Lmat * 0.2, rmax = 50000, beta = LWa * Lmat^LWb * 5000,
-  repro_wt = c(0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0), M = 0.7,
-  harvest_rate = M, L50 = 0.25 * Linf.mu, wqs = L50 * 0.2, bin.size = 1,
-  timemin = 0, timemax = 20, timemin.date = as.Date("1980-01-01"),
-  N0 = 10000, fished_t = seq(0, 20, tincr), lfqFrac = 1)
+  Linf.mu, wmat = Lmat * 0.2, rmax = 10000, beta = 1, repro_wt = c(0, 0,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0), M = 0.7, harvest_rate = M, L50 = 0.25 *
+  Linf.mu, wqs = L50 * 0.2, bin.size = 1, timemin = 0, timemax = 5,
+  timemin.date = as.Date("1980-01-01"), N0 = 10000, fished_t = seq(0, 5,
+  tincr), lfqFrac = 1)
 }
 \arguments{
 \item{tincr}{time increment}
@@ -75,16 +75,16 @@ See (see \code{\link[fishdynr]{dt_growth_soVB}})
 }
 \examples{
 \donttest{
-res <- lfqGen(rmax=30000)
+res <- lfqGen()
 names(res)
 
-op <- par(mfcol=c(3,1), mar=c(4,4,1,1))
+op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
 plot(N ~ dates, data=res$pop, t="l")
-plot(B ~ dates, data=res$pop, t="l")
-plot(SSB ~ dates, data=res$pop, t="l")
+plot(B ~ dates, data=res$pop, t="l", ylab="B, SSB")
+lines(SSB ~ dates, data=res$pop, t="l", lty=2)
 par(op)
 
-pal <- colorRampPalette(c(1,5,7,2), bias=2)
+pal <- colorRampPalette(c("grey30",5,7,2), bias=2)
 with(res$lfqbin, image(x=dates, y=midLengths, z=t(catch), col=pal(100)))
 }
 

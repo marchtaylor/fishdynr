@@ -3,8 +3,6 @@
 #' @param tincr time increment
 #' @param K.mu mean K (growth parameter from von Bertalanffy growth function) 
 #' @param K.cv coefficient of variation on K
-#' #@param L0.mu mean length at recruitment
-#' #@param L0.cv coefficient of variation on L0
 #' @param Linf.mu mean Linf (infinite length parameter from von Bertalanffy growth function)
 #' @param Linf.cv coefficient of variation on Linf
 #' @param ts summer point (range 0 to 1) (parameter from seasonally oscillating von Bertalanffy growth function)
@@ -37,16 +35,16 @@
 #'
 #' @examples
 #' \donttest{
-#' res <- lfqGen(rmax=30000)
+#' res <- lfqGen()
 #' names(res)
 #' 
-#' op <- par(mfcol=c(3,1), mar=c(4,4,1,1))
+#' op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
 #' plot(N ~ dates, data=res$pop, t="l")
-#' plot(B ~ dates, data=res$pop, t="l")
-#' plot(SSB ~ dates, data=res$pop, t="l")
+#' plot(B ~ dates, data=res$pop, t="l", ylab="B, SSB")
+#' lines(SSB ~ dates, data=res$pop, t="l", lty=2)
 #' par(op)
 #' 
-#' pal <- colorRampPalette(c(1,5,7,2), bias=2)
+#' pal <- colorRampPalette(c("grey30",5,7,2), bias=2)
 #' with(res$lfqbin, image(x=dates, y=midLengths, z=t(catch), col=pal(100)))
 #' }
 #' 
@@ -54,20 +52,18 @@
 lfqGen <- function(
 tincr = 1/12,
 K.mu = 0.5, K.cv = 0.1,
-# L0.mu = 5, L0.cv = 0.05, 
 Linf.mu = 80, Linf.cv = 0.1, 
 ts = 0, C = 0.85,
 LWa = 0.01, LWb = 3,
 Lmat = 0.5*Linf.mu, wmat = Lmat*0.2,
-rmax = 50000, beta = LWa*Lmat^LWb * 5000,
-repro_wt = c(0,0,0,0,0,1,0,0,0,0,0,0),
+rmax = 10000, beta = 1,
+repro_wt = c(0,0,1,0,0,0,0,0,0,0,0,0),
 M = 0.7, harvest_rate = M, 
 L50 = 0.25*Linf.mu, wqs = L50*0.2,
 bin.size = 1,
-timemin = 0, timemax = 20, timemin.date = as.Date("1980-01-01"),
+timemin = 0, timemax = 5, timemin.date = as.Date("1980-01-01"),
 N0 = 10000,
-# repro_toy = tincr*3,
-fished_t = seq(0,20,tincr),
+fished_t = seq(0,5,tincr),
 lfqFrac = 1
 ){
 
@@ -83,15 +79,7 @@ lfq <- vector(mode="list", length(timeseq))
 names(lfq) <- timeseq
 
 # Estimate tmaxrecr
-# tmaxrecr <- weighted.mean(seq(repro_wt), w = repro_wt) * tincr
 tmaxrecr <- which.max(repro_wt)*tincr
-# agetmp <- seq(-2,2, by=0.001)
-# ttmp <- agetmp + tmaxrecr
-# tstmp <- (ts - tmaxrecr) %% 1
-# Lttmp <- growth_soVB2(Linf=Linf.mu, K=K.mu, t=agetmp, ts = tstmp, C=C, L0=L0.mu)
-# anchor.t <- ttmp[which.min(abs(Lttmp))]
-# t0 <- anchor.t - tmaxrecr
-
 
 # Winf.mu and phi
 Winf.mu <- LWa*Linf.mu^LWb
@@ -110,23 +98,23 @@ make.inds <- function(
 	F=NaN, Z=NaN, 
 	Fd=0, alive=1
 ){
-	inds <- data.frame(
-		id = id,
-		A = A,
-		L = L,
-		W = W,
-		mat = mat,
-		K = K,
-		Linf = Linf,
-		Winf = Winf,
-		phiprime = phiprime,
-		F = F,
-		Z = Z,
-		Fd = Fd,
-		alive = alive
-	)
-	lastID <<- max(inds$id)
-	return(inds)
+  inds <- data.frame(
+    id = id,
+    A = A,
+    L = L,
+    W = W,
+    mat = mat,
+    K = K,
+    Linf = Linf,
+    Winf = Winf,
+    phiprime = phiprime,
+    F = F,
+    Z = Z,
+    Fd = Fd,
+    alive = alive
+  )
+  lastID <<- max(inds$id)
+  return(inds)
 }
 
 
@@ -314,9 +302,6 @@ res$lfqbin <- list(
     hist(x, breaks=bin.breaks, plot = FALSE, include.lowest = TRUE)$counts
   })
 )
-#rownames(res$lfqbin$catch) <- as.character(res$lfqbin$midLengths)
-#colnames(res$lfqbin$catch) <- as.character(res$lfqbin$dates)
-
 
 # record mean parameters
 res$growthpars <- list(
