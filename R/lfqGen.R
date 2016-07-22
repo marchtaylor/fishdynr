@@ -1,6 +1,5 @@
 #' @title Generate length frequency data from a synthetic fish population
 #'
-#' @param tincr time increment
 #' @param K.mu mean K (growth parameter from von Bertalanffy growth function) 
 #' @param K.cv coefficient of variation on K
 #' @param Linf.mu mean Linf (infinite length parameter from von Bertalanffy growth function)

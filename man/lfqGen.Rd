@@ -13,13 +13,11 @@ lfqGen(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
   tincr), lfqFrac = 1)
 }
 \arguments{
-\item{tincr}{time increment}
+\item{tincr}{time increment for simulation (default = 1/12; i.e. 1 month)}
 
 \item{K.mu}{mean K (growth parameter from von Bertalanffy growth function)}
 
-\item{K.cv}{coefficient of variation on K
-#@param L0.mu mean length at recruitment
-#@param L0.cv coefficient of variation on L0}
+\item{K.cv}{coefficient of variation on K}
 
 \item{Linf.mu}{mean Linf (infinite length parameter from von Bertalanffy growth function)}
 
@@ -64,8 +62,6 @@ lfqGen(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
 \item{fished_t}{times when stock is fished}
 
 \item{lfqFrac}{fraction of fished stock that are sampled for length frequency data (default = 1).}
-
-\item{tincr}{time increment for simulation (default = 1/12; i.e. 1 month)}
 }
 \value{
 a list containing growth parameters and length frequency object
