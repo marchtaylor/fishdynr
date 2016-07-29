@@ -4,6 +4,7 @@
 #' @param K.cv coefficient of variation on K
 #' @param Linf.mu mean Linf (infinite length parameter from von Bertalanffy growth function)
 #' @param Linf.cv coefficient of variation on Linf
+#' @param phiprime.mu mean growth perfomance index phi prime (phi')
 #' @param ts summer point (range 0 to 1) (parameter from seasonally oscillating von Bertalanffy growth function)
 #' @param C strength of seasonal oscillation (range 0 to 1) (parameter from seasonally oscillating von Bertalanffy growth function)
 #' @param LWa length-weight relationship constant 'a' (W = a*L^b). Model assumed length in cm and weight in kg.
@@ -30,6 +31,10 @@
 #' 
 #' @return a list containing growth parameters and length frequency object
 #' 
+#' @importFrom graphics hist
+#' @importFrom stats rlnorm runif
+#' @importFrom utils txtProgressBar setTxtProgressBar
+#' 
 #' @export
 #'
 #' @examples
@@ -51,7 +56,8 @@
 lfqGen <- function(
 tincr = 1/12,
 K.mu = 0.5, K.cv = 0.1,
-Linf.mu = 80, Linf.cv = 0.1, 
+Linf.mu = 80, Linf.cv = 0.1,
+phiprime.mu = 3.5,
 ts = 0, C = 0.85,
 LWa = 0.01, LWb = 3,
 Lmat = 0.5*Linf.mu, wmat = Lmat*0.2,
@@ -80,10 +86,10 @@ names(lfq) <- timeseq
 # Estimate tmaxrecr
 tmaxrecr <- which.max(repro_wt)*tincr
 
-# Winf.mu and phi
-Winf.mu <- LWa*Linf.mu^LWb
-phi <- log10(K.mu) + 0.67*log10(Winf.mu)
-phiprime = log10(K.mu) + 2*log10(Linf.mu)
+# # Winf.mu and phi
+# Winf.mu <- LWa*Linf.mu^LWb
+# phi <- log10(K.mu) + 0.67*log10(Winf.mu)
+# phiprime = log10(K.mu) + 2*log10(Linf.mu)
 
 
 
@@ -120,8 +126,7 @@ make.inds <- function(
 express.inds <- function(inds){
   inds$Linf <- Linf.mu * rlnorm(nrow(inds), 0, Linf.cv)
   inds$Winf <- LWa*inds$Linf^LWb
-  inds$K <- 10^((phi - 0.67*log10(inds$Winf)) * rlnorm(nrow(inds), 0, K.cv))
-  #inds$L <- inds$L * rlnorm(nrow(inds), meanlog = 0, sdlog = L0.cv)
+  inds$K <- 10^(phiprime.mu - 2*log10(inds$Linf)) * rlnorm(nrow(inds), 0, K.cv)
   inds$W <- LWa*inds$L^LWb
   inds$phiprime <- log10(inds$K) + 2*log10(inds$Linf)
 	return(inds)
@@ -308,7 +313,7 @@ res$growthpars <- list(
   Linf = Linf.mu,
   C = C,
   ts = ts,
-  phiprime = phiprime,
+  phiprime = phiprime.mu,
   tmaxrecr = tmaxrecr
 )
 

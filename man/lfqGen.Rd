@@ -5,12 +5,12 @@
 \title{Generate length frequency data from a synthetic fish population}
 \usage{
 lfqGen(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
-  Linf.cv = 0.1, ts = 0, C = 0.85, LWa = 0.01, LWb = 3, Lmat = 0.5 *
-  Linf.mu, wmat = Lmat * 0.2, rmax = 10000, beta = 1, repro_wt = c(0, 0,
-  1, 0, 0, 0, 0, 0, 0, 0, 0, 0), M = 0.7, harvest_rate = M, L50 = 0.25 *
-  Linf.mu, wqs = L50 * 0.2, bin.size = 1, timemin = 0, timemax = 5,
-  timemin.date = as.Date("1980-01-01"), N0 = 10000, fished_t = seq(0, 5,
-  tincr), lfqFrac = 1)
+  Linf.cv = 0.1, phiprime.mu = 3.5, ts = 0, C = 0.85, LWa = 0.01,
+  LWb = 3, Lmat = 0.5 * Linf.mu, wmat = Lmat * 0.2, rmax = 10000,
+  beta = 1, repro_wt = c(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0), M = 0.7,
+  harvest_rate = M, L50 = 0.25 * Linf.mu, wqs = L50 * 0.2, bin.size = 1,
+  timemin = 0, timemax = 5, timemin.date = as.Date("1980-01-01"),
+  N0 = 10000, fished_t = seq(0, 5, tincr), lfqFrac = 1)
 }
 \arguments{
 \item{tincr}{time increment for simulation (default = 1/12; i.e. 1 month)}
@@ -22,6 +22,8 @@ lfqGen(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
 \item{Linf.mu}{mean Linf (infinite length parameter from von Bertalanffy growth function)}
 
 \item{Linf.cv}{coefficient of variation on Linf}
+
+\item{phiprime.mu}{mean growth perfomance index phi prime (phi')}
 
 \item{ts}{summer point (range 0 to 1) (parameter from seasonally oscillating von Bertalanffy growth function)}
 
