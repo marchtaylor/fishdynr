@@ -10,7 +10,8 @@ lfqGen(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
   beta = 1, repro_wt = c(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0), M = 0.7,
   harvest_rate = M, L50 = 0.25 * Linf.mu, wqs = L50 * 0.2, bin.size = 1,
   timemin = 0, timemax = 5, timemin.date = as.Date("1980-01-01"),
-  N0 = 10000, fished_t = seq(0, 5, tincr), lfqFrac = 1)
+  N0 = 10000, fished_t = seq(0, 5, tincr), lfqFrac = 1,
+  progressBar = TRUE)
 }
 \arguments{
 \item{tincr}{time increment for simulation (default = 1/12; i.e. 1 month)}
@@ -64,6 +65,8 @@ lfqGen(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
 \item{fished_t}{times when stock is fished}
 
 \item{lfqFrac}{fraction of fished stock that are sampled for length frequency data (default = 1).}
+
+\item{progressBar}{Logical. Should progress bar be shown in console (Default=TRUE)}
 }
 \value{
 a list containing growth parameters and length frequency object

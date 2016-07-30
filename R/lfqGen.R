@@ -26,6 +26,7 @@
 #' @param N0 starting number of individuals
 #' @param fished_t times when stock is fished
 #' @param lfqFrac fraction of fished stock that are sampled for length frequency data (default = 1).
+#' @param progressBar Logical. Should progress bar be shown in console (Default=TRUE)
 #' 
 #' @description See (see \code{\link[fishdynr]{dt_growth_soVB}})
 #' 
@@ -69,7 +70,8 @@ bin.size = 1,
 timemin = 0, timemax = 5, timemin.date = as.Date("1980-01-01"),
 N0 = 10000,
 fished_t = seq(0,5,tincr),
-lfqFrac = 1
+lfqFrac = 1,
+progressBar = TRUE
 ){
 
 # times
@@ -241,7 +243,7 @@ res$pop <- list(
 )
 
 # simulation
-pb <- txtProgressBar(min=1, max=length(timeseq), style=3)
+if(progressBar) pb <- txtProgressBar(min=1, max=length(timeseq), style=3)
 for(j in seq(timeseq)){
   t <- timeseq[j]
 	
@@ -278,10 +280,10 @@ for(j in seq(timeseq)){
 	res$pop$B[j] <- sum(inds$W)
 	res$pop$SSB[j] <- sum(inds$W*inds$mat)
 	
-	setTxtProgressBar(pb, j)
+	if(progressBar) setTxtProgressBar(pb, j)
 
 }
-close(pb)
+if(progressBar) close(pb)
 
 
 
