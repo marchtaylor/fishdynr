@@ -7,7 +7,7 @@
 lfqGen(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
   Linf.cv = 0.1, phiprime.mu = 3.5, ts = 0, C = 0.85, LWa = 0.01,
   LWb = 3, Lmat = 0.5 * Linf.mu, wmat = Lmat * 0.2, rmax = 10000,
-  beta = 1, repro_wt = c(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0), M = 0.7,
+  beta = 1, repro_wt = c(0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0), M = 0.7,
   harvest_rate = M, L50 = 0.25 * Linf.mu, wqs = L50 * 0.2, bin.size = 1,
   timemin = 0, timemax = 5, timemin.date = as.Date("1980-01-01"),
   N0 = 10000, fished_t = seq(0, 5, tincr), lfqFrac = 1,

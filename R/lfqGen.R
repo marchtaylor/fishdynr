@@ -63,7 +63,7 @@ ts = 0, C = 0.85,
 LWa = 0.01, LWb = 3,
 Lmat = 0.5*Linf.mu, wmat = Lmat*0.2,
 rmax = 10000, beta = 1,
-repro_wt = c(0,0,1,0,0,0,0,0,0,0,0,0),
+repro_wt = c(0,0,0,1,0,0,0,0,0,0,0,0),
 M = 0.7, harvest_rate = M, 
 L50 = 0.25*Linf.mu, wqs = L50*0.2,
 bin.size = 1,
@@ -86,7 +86,7 @@ lfq <- vector(mode="list", length(timeseq))
 names(lfq) <- timeseq
 
 # Estimate tmaxrecr
-tmaxrecr <- which.max(repro_wt)*tincr
+tmaxrecr <- (which.max(repro_wt)-1)*tincr
 
 # # Winf.mu and phi
 # Winf.mu <- LWa*Linf.mu^LWb
