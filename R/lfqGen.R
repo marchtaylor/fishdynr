@@ -27,9 +27,22 @@
 #' @param lfqFrac fraction of fished stock that are sampled for length frequency data (default = 1).
 #' @param progressBar Logical. Should progress bar be shown in console (Default=TRUE)
 #' 
-#' @description See (see \code{\link[fishdynr]{dt_growth_soVB}})
+#' @description See \code{\link[fishdynr]{dt_growth_soVB}} for information on growth function.
+#' The model creates variation in growth based on a mean phi prime value for the population,
+#' which describes relationship between individual Linf and K values. See Vakily (1992) 
+#' for more details. 
 #' 
 #' @return a list containing growth parameters and length frequency object
+#' 
+#' @references 
+#' Vakily, J.M., 1992. Determination and comparison of bivalve growth, 
+#' with emphasis on Thailand and other tropical areas. WorldFish.
+#' 
+#' Munro, J.L., Pauly, D., 1983. A simple method for comparing the growth 
+#' of fishes and invertebrates. Fishbyte 1, 5-6.
+#' 
+#' Pauly, D., Munro, J., 1984. Once more on the comparison of growth 
+#' in fish and invertebrates. Fishbyte (Philippines).
 #' 
 #' @importFrom graphics hist
 #' @importFrom stats rlnorm runif

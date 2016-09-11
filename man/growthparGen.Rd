@@ -32,6 +32,9 @@ parameters for each individual (rows).
 Generate growth parameters for a population for the seasonally oscillating 
 von Bertalanffy growth function with a given given mean and coefficient 
 of variation. Generated parameters can be passed to \code{\link[fishdynr]{growth_soVB}}.
+The model creates variation in growth based on a mean phi prime value for the population,
+which describes relationship between individual Linf and K values. See Vakily (1992) 
+for more details.
 }
 \examples{
 
