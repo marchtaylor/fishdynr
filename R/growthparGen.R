@@ -9,7 +9,6 @@
 #' @param K.cv coefficient of variation for growth constant K
 #' @param Linf.mu mean infinite length of population
 #' @param Linf.cv coefficient of variation for infinite length Linf
-#' @param phiprime.mu mean growth perfomance index phi prime (phi')
 #' @param ts summer point (0-1)
 #' @param C oscilation strength (0-1)
 #' @param t0 age at lengthh zero
@@ -66,7 +65,6 @@ growthparGen <- function(
 n = 100,
 K.mu = 0.5, K.cv = 0.1,
 Linf.mu = 80, Linf.cv = 0.1,
-phiprime.mu = 3.5,
 ts = 0.25, C = 0.85,
 t0 = -0.1
 ){
@@ -74,6 +72,11 @@ t0 = -0.1
 inds <- data.frame(
   Linf = Linf.mu * rlnorm(n, 0, Linf.cv)
 )
+
+# mean phiprime
+phiprime.mu = log10(K.mu) + 2*log10(Linf.mu)
+
+
 inds$K <- 10^(phiprime.mu - 2*log10(inds$Linf)) * rlnorm(n, 0, K.cv)
 inds$phiprime <- log10(inds$K) + 2*log10(inds$Linf)
 inds$t0 <- t0

@@ -5,7 +5,7 @@
 \title{Generate growth parameters for soVBGF}
 \usage{
 growthparGen(n = 100, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
-  Linf.cv = 0.1, phiprime.mu = 3.5, ts = 0.25, C = 0.85, t0 = -0.1)
+  Linf.cv = 0.1, ts = 0.25, C = 0.85, t0 = -0.1)
 }
 \arguments{
 \item{n}{number of individuals to general}
@@ -17,8 +17,6 @@ growthparGen(n = 100, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
 \item{Linf.mu}{mean infinite length of population}
 
 \item{Linf.cv}{coefficient of variation for infinite length Linf}
-
-\item{phiprime.mu}{mean growth perfomance index phi prime (phi')}
 
 \item{ts}{summer point (0-1)}
 

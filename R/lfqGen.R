@@ -4,7 +4,6 @@
 #' @param K.cv coefficient of variation on K
 #' @param Linf.mu mean Linf (infinite length parameter from von Bertalanffy growth function)
 #' @param Linf.cv coefficient of variation on Linf
-#' @param phiprime.mu mean growth perfomance index phi prime (phi')
 #' @param ts summer point (range 0 to 1) (parameter from seasonally oscillating von Bertalanffy growth function)
 #' @param C strength of seasonal oscillation (range 0 to 1) (parameter from seasonally oscillating von Bertalanffy growth function)
 #' @param LWa length-weight relationship constant 'a' (W = a*L^b). Model assumed length in cm and weight in kg.
@@ -58,7 +57,6 @@ lfqGen <- function(
 tincr = 1/12,
 K.mu = 0.5, K.cv = 0.1,
 Linf.mu = 80, Linf.cv = 0.1,
-phiprime.mu = 3.5,
 ts = 0, C = 0.85,
 LWa = 0.01, LWb = 3,
 Lmat = 0.5*Linf.mu, wmat = Lmat*0.2,
@@ -88,10 +86,8 @@ names(lfq) <- timeseq
 # Estimate tmaxrecr
 tmaxrecr <- (which.max(repro_wt)-1)*tincr
 
-# # Winf.mu and phi
-# Winf.mu <- LWa*Linf.mu^LWb
-# phi <- log10(K.mu) + 0.67*log10(Winf.mu)
-# phiprime = log10(K.mu) + 2*log10(Linf.mu)
+# mean phiprime
+phiprime.mu = log10(K.mu) + 2*log10(Linf.mu)
 
 
 
