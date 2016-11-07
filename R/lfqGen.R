@@ -146,12 +146,12 @@ express.inds <- function(inds){
 
 
 grow.inds <- function(inds){
-	#grow
+	# grow
   L2 <- dt_growth_soVB(Linf = inds$Linf, K = inds$K, ts = ts, C = C, L1 = inds$L, t1 = t-tincr, t2 = t)
-  #update length and weight
+  # update length and weight
 	inds$L <- L2
 	inds$W <- LWa*inds$L^LWb
-	#age inds
+	# age inds
 	inds$A <- inds$A + tincr
 	return(inds)
 }
@@ -175,7 +175,7 @@ death.inds <- function(inds){
 	  inds$alive[dead] <- 0
 	  tmp <- cbind(inds$F[dead], inds$Z[dead])
 	  # Fd=1 for fished individuals; Fd=0, for those that died naturally
-	  Fd <- apply(tmp, 1, FUN=function(x){sample(c(0,1), 1, prob=c(M/x[2], x[1]/x[2]) )})
+	  Fd <- apply(tmp, 1, FUN=function(x){sample(c(0,1), size=1, prob=c(M/x[2], x[1]/x[2]) )})
   	inds$Fd[dead] <- Fd
     rm(tmp)
 	}

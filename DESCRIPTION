@@ -1,8 +1,8 @@
 Package: fishdynr
 Type: Package
 Title: Fisheries science related population dynamics models
-Version: 0.2
-Date: 2016-07-19
+Version: 0.3
+Date: 2016-11-07
 Author: Marc Taylor
 Maintainer: Marc Taylor <ningkiling@gmail.com>
 Description: Contains functions for describing fish growth, mortality, 
