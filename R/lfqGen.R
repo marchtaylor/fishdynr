@@ -78,9 +78,9 @@ repro_wt = c(0,0,0,1,0,0,0,0,0,0,0,0),
 M = 0.7, harvest_rate = M, 
 L50 = 0.25*Linf.mu, wqs = L50*0.2,
 bin.size = 1,
-timemin = 0, timemax = 5, timemin.date = as.Date("1980-01-01"),
+timemin = 0, timemax = 20, timemin.date = as.Date("1980-01-01"),
 N0 = 10000,
-fished_t = seq(0,5,tincr),
+fished_t = seq(17,19,tincr),
 lfqFrac = 1,
 progressBar = TRUE
 ){
