@@ -24,9 +24,9 @@
 #' @export
 #' 
 growth_soVB <- function(Linf, K, t, t0, ts, C){
-  Linf * (1-exp(
-    -K*(t-t0)
+  Linf * (1-exp(-(
+    K*(t-t0)
     + (((C*K)/(2*pi))*sin(2*pi*(t-ts)))
     - (((C*K)/(2*pi))*sin(2*pi*(t0-ts)))
-  ))
+  )))
 }

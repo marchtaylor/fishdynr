@@ -22,8 +22,8 @@
 #' @export
 #' 
 growth_soVB2 <- function(Linf, K, t, L0, ts, C){
-  Linf - (Linf - L0) * exp(
-    -K*(t)
+  Linf - (Linf - L0) * exp(-(
+    K*(t)
     + (((C*K)/(2*pi))*sin(2*pi*(t-ts)))
-  )
+  ))
 }
