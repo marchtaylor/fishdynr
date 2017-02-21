@@ -66,8 +66,8 @@
 #' 
 growthparGen <- function(
 n = 100,
-K.mu = 0.5, K.cv = 0.1,
-Linf.mu = 80, Linf.cv = 0.1,
+K.mu = 0.5, K.cv = 0.05,
+Linf.mu = 80, Linf.cv = 0.05,
 ts = 0.25, C = 0.85,
 t0 = -0.1
 ){
@@ -80,7 +80,8 @@ inds <- data.frame(
 phiprime.mu = log10(K.mu) + 2*log10(Linf.mu)
 
 
-inds$K <- 10^(phiprime.mu - 2*log10(inds$Linf)) * rlnorm(n, 0, K.cv)
+# inds$K <- 10^(phiprime.mu - 2*log10(inds$Linf)) * rlnorm(n, 0, K.cv)
+inds$K <- K.mu * rlnorm(n, 0, K.cv)
 inds$phiprime <- log10(inds$K) + 2*log10(inds$Linf)
 inds$t0 <- t0
 inds$ts <- ts

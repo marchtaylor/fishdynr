@@ -4,8 +4,8 @@
 \alias{growthparGen}
 \title{Generate growth parameters for soVBGF}
 \usage{
-growthparGen(n = 100, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
-  Linf.cv = 0.1, ts = 0.25, C = 0.85, t0 = -0.1)
+growthparGen(n = 100, K.mu = 0.5, K.cv = 0.05, Linf.mu = 80,
+  Linf.cv = 0.05, ts = 0.25, C = 0.85, t0 = -0.1)
 }
 \arguments{
 \item{n}{number of individuals to general}

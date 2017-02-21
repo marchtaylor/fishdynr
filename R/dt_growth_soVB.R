@@ -51,11 +51,11 @@
 #' 
 dt_growth_soVB <- function(Linf, K, ts, C, L1, t1, t2){
   dt <- (Linf - L1) *
-  {1 - exp(
-    -K*(t2-t1)
+  {1 - exp(-(
+    K*(t2-t1)
     - (((C*K)/(2*pi))*sin(2*pi*(t1-ts)))
     + (((C*K)/(2*pi))*sin(2*pi*(t2-ts)))
-  )}
+  ))}
   L2 <- L1 + dt
   L2
 }

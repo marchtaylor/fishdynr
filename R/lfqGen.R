@@ -137,7 +137,8 @@ make.inds <- function(
 express.inds <- function(inds){
   inds$Linf <- Linf.mu * rlnorm(nrow(inds), 0, Linf.cv)
   inds$Winf <- LWa*inds$Linf^LWb
-  inds$K <- 10^(phiprime.mu - 2*log10(inds$Linf)) * rlnorm(nrow(inds), 0, K.cv)
+  # inds$K <- 10^(phiprime.mu - 2*log10(inds$Linf)) * rlnorm(nrow(inds), 0, K.cv)
+  inds$K <- K.mu * rlnorm(nrow(inds), 0, K.cv)
   inds$W <- LWa*inds$L^LWb
   inds$phiprime <- log10(inds$K) + 2*log10(inds$Linf)
 	return(inds)
