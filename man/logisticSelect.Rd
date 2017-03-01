@@ -40,4 +40,3 @@ text(20,.5,bquote("L"[50]), pos=4, col=1, font=1)
 
 
 }
-

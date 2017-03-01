@@ -81,4 +81,3 @@ sum(tmp$Yt/1e6, na.rm=TRUE)
 Walters, C. J., Martell, S. J., 2004. 
 Fisheries ecology and management. Princeton University Press.
 }
-

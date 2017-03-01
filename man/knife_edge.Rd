@@ -32,4 +32,3 @@ legend("topleft", legend=knife_edge_sizes,
 )
 
 }
-

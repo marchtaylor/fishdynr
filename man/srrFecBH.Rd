@@ -35,4 +35,3 @@ abline(h=srrFecBH_b*srrFecBH_a, lty=2, col=8)
 Beverton, R. J., Holt, S. J., 1957. 
 On the dynamics of exploited fish populations
 }
-

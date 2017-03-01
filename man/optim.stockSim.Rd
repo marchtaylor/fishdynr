@@ -95,4 +95,3 @@ par(op)
 Walters, C. J., Martell, S. J., 2004. 
 Fisheries ecology and management. Princeton University Press.
 }
-

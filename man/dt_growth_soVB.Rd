@@ -62,4 +62,3 @@ arrows(
 Somers, I. F. (1988). On a seasonally oscillating growth function. 
 Fishbyte, 6(1), 8-11.
 }
-

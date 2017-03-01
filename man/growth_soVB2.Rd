@@ -34,4 +34,3 @@ plot(t, L, t="l", ylim=c(0,110), xaxs="i", yaxs="i")
 points(0,10); abline(h=100, lty=2, col=8)
 
 }
-

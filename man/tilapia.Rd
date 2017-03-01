@@ -48,4 +48,3 @@ res <- cohortSim(tilapia, t_incr=0.1)
 plot(Lt ~ t, res, t="l")
 }
 \keyword{datasets}
-

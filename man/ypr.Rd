@@ -69,4 +69,3 @@ mtext("Rel. Spawning Biomass", line=0.5, side=3)
 par(op)
 
 }
-

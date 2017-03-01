@@ -34,4 +34,3 @@ legend("bottomright", legend=c("Lmat=10; wmat=5", "Lmat=10; wmat=2"),
 Heino M, Dieckmann U, Godo OR (2002) Measuring probabilistic reaction norms 
 for age and size at maturation. Evolution 56: 669-678.
 }
-

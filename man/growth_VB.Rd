@@ -25,4 +25,3 @@ L <- growth_VB(Linf=100, K=0.5, t=t, t0=-0.2)
 plot(t, L, t="l")
 
 }
-

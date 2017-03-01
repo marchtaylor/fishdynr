@@ -40,4 +40,3 @@ text(x=beta, y=0, labels="beta", pos=4, col=8)
 Beverton, R. J., Holt, S. J., 1957. 
 On the dynamics of exploited fish populations
 }
-

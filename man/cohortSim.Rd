@@ -55,4 +55,3 @@ plot(Nt ~ t, res, t="l", log="y")
 lines(Nt.noF ~ t, res, col=2, lty=2)
 
 }
-

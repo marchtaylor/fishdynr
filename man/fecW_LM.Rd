@@ -27,4 +27,3 @@ plot(Neggst ~ Wt, res) # Number of eggs as a function of ind. weight
 plot(res$t, res$Neggst*res$pmat*res$Nt) # total population fecundity by age
 
 }
-
