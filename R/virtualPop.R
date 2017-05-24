@@ -1,4 +1,4 @@
-#' @title Generate length frequency data from a synthetic fish population
+#' @title Virtual fish population
 #'
 #' @param K.mu mean K (growth parameter from von Bertalanffy growth function) 
 #' @param K.cv coefficient of variation on K
@@ -24,7 +24,7 @@
 #' @param tincr time increment for simulation (default = 1/12; i.e. 1 month)
 #' @param N0 starting number of individuals
 #' @param fished_t times when stock is fished
-#' @param lfqFrac fraction of fished stock that are sampled for length frequency data (default = 1).
+#' @param lfqFrac fraction of fished stock that are sampled for length frequency data (default = 0.1).
 #' @param progressBar Logical. Should progress bar be shown in console (Default=TRUE)
 #' 
 #' @description See \code{\link[fishdynr]{dt_growth_soVB}} for information on growth function.
@@ -53,7 +53,8 @@
 #'
 #' @examples
 #' \donttest{
-#' res <- lfqGen()
+#' set.seed(1)
+#' res <- virtualPop()
 #' names(res)
 #' 
 #' op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
@@ -64,16 +65,84 @@
 #' 
 #' pal <- colorRampPalette(c("grey30",5,7,2), bias=2)
 #' with(res$lfqbin, image(x=dates, y=midLengths, z=t(catch), col=pal(100)))
+#' 
+#' ### biased results with single monthly sample
+#' inds <- res$inds[[1]]
+#' plot(mat ~ L, data = inds, pch=".", cex=5, col=rgb(0,0,0,0.05))
+#' fit <- glm(mat ~ L, data = inds, family = binomial(link = "logit"))
+#' summary(fit)
+#' 
+#' newdat <- data.frame(L = seq(min(inds$L), max(inds$L), length.out=100))
+#' newdat$pmat <- pmat_w(newdat$L, Lmat = 40, wmat=40*0.2)
+#' pred <- predict(fit, newdata=newdat, se.fit=TRUE)
+#' # Combine the hypothetical data and predicted values
+#' newdat <- cbind(newdat, pred)
+#' # Calculate confidence intervals
+#' std <- qnorm(0.95 / 2 + 0.5)
+#' newdat$ymin <- fit$family$linkinv(newdat$fit - std * newdat$se.fit)
+#' newdat$ymax <- fit$family$linkinv(newdat$fit + std * newdat$se.fit)
+#' newdat$fit <- fit$family$linkinv(newdat$fit)  # Rescale to 0-1
+#' 
+#' plot(mat ~ L, data = inds, pch=".", cex=5, col=rgb(0,0,0,0.05))
+#' lines(pmat ~ L, newdat, col=8, lty=3)
+#' polygon(
+#'   x = c(newdat$L, rev(newdat$L)),
+#'   y = c(newdat$ymax, rev(newdat$ymin)),
+#'   col = adjustcolor(2, alpha.f = 0.3),
+#'   border = adjustcolor(2, alpha.f = 0.3)
+#' )
+#' lines(fit ~ L, newdat, col=2)
+#' 
+#' lrPerc <- function(alpha, beta, p) (log(p/(1-p))-alpha)/beta
+#' ( L50 <- lrPerc(alpha=coef(fit)[1], beta=coef(fit)[2], p=0.5) )
+#' lines(x=c(L50,L50,0), y=c(-100,0.5,0.5), lty=2, col=2)
+#' text(x=L50, y=0.5, labels = paste0("L50 = ", round(L50,2)), pos=4, col=2 )
+#' 
+#' 
+#' 
+#' ### all samples combined
+#' inds <- do.call("rbind", res$inds)
+#' plot(mat ~ L, data = inds, pch=".", cex=5, col=rgb(0,0,0,0.05))
+#' fit <- glm(mat ~ L, data = inds, family = binomial(link = "logit"))
+#' summary(fit)
+#' 
+#' newdat <- data.frame(L = seq(min(inds$L), max(inds$L), length.out=100))
+#' newdat$pmat <- pmat_w(newdat$L, Lmat = 40, wmat=40*0.2)
+#' pred <- predict(fit, newdata=newdat, se.fit=TRUE)
+#' # Combine the hypothetical data and predicted values
+#' newdat <- cbind(newdat, pred)
+#' # Calculate confidence intervals
+#' std <- qnorm(0.95 / 2 + 0.5)
+#' newdat$ymin <- fit$family$linkinv(newdat$fit - std * newdat$se.fit)
+#' newdat$ymax <- fit$family$linkinv(newdat$fit + std * newdat$se.fit)
+#' newdat$fit <- fit$family$linkinv(newdat$fit)  # Rescale to 0-1
+#' 
+#' plot(mat ~ L, data = inds, pch=".", cex=5, col=rgb(0,0,0,0.05))
+#' lines(pmat ~ L, newdat, col=8, lty=3)
+#' polygon(
+#'   x = c(newdat$L, rev(newdat$L)),
+#'   y = c(newdat$ymax, rev(newdat$ymin)),
+#'   col = adjustcolor(2, alpha.f = 0.3),
+#'   border = adjustcolor(2, alpha.f = 0.3)
+#' )
+#' lines(fit ~ L, newdat, col=2)
+#' 
+#' lrPerc <- function(alpha, beta, p) (log(p/(1-p))-alpha)/beta
+#' ( L50 <- lrPerc(alpha=coef(fit)[1], beta=coef(fit)[2], p=0.5) )
+#' lines(x=c(L50,L50,0), y=c(-100,0.5,0.5), lty=2, col=2)
+#' text(x=L50, y=0.5, labels = paste0("L50 = ", round(L50,2)), pos=4, col=2 )
+#' 
+#' 
 #' }
 #' 
 #' 
-lfqGen <- function(
+virtualPop <- function(
 tincr = 1/12,
 K.mu = 0.5, K.cv = 0.1,
 Linf.mu = 80, Linf.cv = 0.1,
 ts = 0, C = 0.85,
 LWa = 0.01, LWb = 3,
-Lmat = 0.5*Linf.mu, wmat = Lmat*0.2,
+Lmat = 40, wmat = 8,
 rmax = 10000, beta = 1,
 repro_wt = c(0,0,0,1,0,0,0,0,0,0,0,0),
 M = 0.7, harvest_rate = M, 
@@ -81,7 +150,7 @@ L50 = 0.25*Linf.mu, wqs = L50*0.2,
 bin.size = 1,
 timemin = 0, timemax = 20, timemin.date = as.Date("1980-01-01"),
 N0 = 10000,
-fished_t = seq(17,19,tincr),
+fished_t = seq(17,20,tincr),
 lfqFrac = 1,
 progressBar = TRUE
 ){
@@ -96,6 +165,10 @@ repro_t <- rep(repro_wt, length=length(timeseq))
 # make empty lfq object
 lfq <- vector(mode="list", length(timeseq))
 names(lfq) <- timeseq
+
+indsSamp <- vector(mode="list", length(timeseq))
+names(indsSamp) <- timeseq
+
 
 # Estimate tmaxrecr
 tmaxrecr <- (which.max(repro_wt)-1)*tincr
@@ -282,9 +355,13 @@ for(j in seq(timeseq)){
 	inds <- reproduce.inds(inds)
 	inds <- death.inds(inds)
   if(lfqSamp){
-    tmp <- try( sample(inds$L, ceiling(sum(inds$Fd)*lfqFrac), prob = inds$Fd), silent = TRUE)
-    if(class(tmp) != "try-error"){lfq[[j]] <- tmp}
-    rm(tmp) 
+    samp <- try( sample(seq(inds$L), ceiling(sum(inds$Fd)*lfqFrac), prob = inds$Fd), silent = TRUE)
+    # tmp <- try( sample(inds$L, ceiling(sum(inds$Fd)*lfqFrac), prob = inds$Fd), silent = TRUE)
+    if(class(samp) != "try-error"){
+      lfq[[j]] <- inds$L[samp]
+      indsSamp[[j]] <- inds[samp,]
+    }
+    rm(samp) 
   }
 	inds <- remove.inds(inds)
 	
@@ -322,6 +399,12 @@ res$lfqbin <- list(
   })
 )
 
+
+# individuals
+indsSamp <- indsSamp[which(sapply(indsSamp, length) > 0)]
+res$inds <- indsSamp
+
+
 # record mean parameters
 res$growthpars <- list(
   K = K.mu,
@@ -331,6 +414,7 @@ res$growthpars <- list(
   phiprime = phiprime.mu,
   tmaxrecr = tmaxrecr
 )
+
 
 return(res)
 
