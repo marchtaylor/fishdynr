@@ -75,7 +75,7 @@ which describes relationship between individual Linf and K values. See Vakily (1
 for more details.
 }
 \examples{
-\donttest{
+
 set.seed(1)
 res <- virtualPop()
 names(res)
@@ -156,7 +156,7 @@ lines(x=c(L50,L50,0), y=c(-100,0.5,0.5), lty=2, col=2)
 text(x=L50, y=0.5, labels = paste0("L50 = ", round(L50,2)), pos=4, col=2 )
 
 
-}
+
 
 
 }
