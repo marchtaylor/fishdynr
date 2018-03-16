@@ -23,6 +23,7 @@
 #' @param timemin.date date corresponding to timemin (of "Date" class)
 #' @param tincr time increment for simulation (default = 1/12; i.e. 1 month)
 #' @param N0 starting number of individuals
+#' @param initializePop logical. Should initial population be approximated based on SRR equilibrium
 #' @param fished_t times when stock is fished
 #' @param lfqFrac fraction of fished stock that are sampled for length frequency data (default = 0.1).
 #' @param progressBar Logical. Should progress bar be shown in console (Default=TRUE)
@@ -54,14 +55,14 @@
 #' @examples
 #' 
 #' set.seed(1)
-#' res <- virtualPop()
+#' res <- virtualPop(initializePop = T, N0=100)
 #' names(res)
 #' 
 #' op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
-#' plot(N ~ dates, data=res$pop, t="l")
-#' plot(B ~ dates, data=res$pop, t="l", ylab="B, SSB")
+#' plot(N ~ dates, data=res$pop, t="l", ylim=c(0, max(N)))
+#' plot(B ~ dates, data=res$pop, t="l", ylim=c(0, max(B)), ylab="B, SSB")
 #' lines(SSB ~ dates, data=res$pop, t="l", lty=2)
-#' par(op)
+#' par(op) 
 #' 
 #' pal <- colorRampPalette(c("grey30",5,7,2), bias=2)
 #' with(res$lfqbin, image(x=dates, y=midLengths, z=t(catch), col=pal(100)))
@@ -75,6 +76,7 @@
 #' newdat <- data.frame(L = seq(min(inds$L), max(inds$L), length.out=100))
 #' newdat$pmat <- pmat_w(newdat$L, Lmat = 40, wmat=40*0.2)
 #' pred <- predict(fit, newdata=newdat, se.fit=TRUE)
+#' 
 #' # Combine the hypothetical data and predicted values
 #' newdat <- cbind(newdat, pred)
 #' # Calculate confidence intervals
@@ -140,7 +142,7 @@ virtualPop <- function(
 tincr = 1/12,
 K.mu = 0.5, K.cv = 0.1,
 Linf.mu = 80, Linf.cv = 0.1,
-ts = 0, C = 0.85,
+ts = 0.5, C = 0.75,
 LWa = 0.01, LWb = 3,
 Lmat = 40, wmat = 8,
 rmax = 10000, beta = 1,
@@ -148,19 +150,19 @@ repro_wt = c(0,0,0,1,0,0,0,0,0,0,0,0),
 M = 0.7, harvest_rate = M, 
 L50 = 0.25*Linf.mu, wqs = L50*0.2,
 bin.size = 1,
-timemin = 0, timemax = 20, timemin.date = as.Date("1980-01-01"),
+timemin = 0, timemax = 10, timemin.date = as.Date("1980-01-01"),
 N0 = 10000,
-fished_t = seq(17,20,tincr),
+initializePop = TRUE,
+fished_t = seq(timemin,timemax,tincr),
 lfqFrac = 1,
 progressBar = TRUE
 ){
 
 # times
-timeseq = seq(from=timemin, to=timemax, by=tincr)
+timeseq <- seq(from=timemin, to=timemax, by=tincr)
 if(!zapsmall(1/tincr) == length(repro_wt)) stop("length of repro_wt must equal the number of tincr in one year")
 repro_wt <- repro_wt/sum(repro_wt)
 repro_t <- rep(repro_wt, length=length(timeseq)) 
-# repro_t <- seq(timemin+repro_toy, timemax+repro_toy, by=1)
 
 # make empty lfq object
 lfq <- vector(mode="list", length(timeseq))
@@ -177,23 +179,20 @@ tmaxrecr <- (which.max(repro_wt)-1)*tincr
 phiprime.mu = log10(K.mu) + 2*log10(Linf.mu)
 
 
-
 # required functions ------------------------------------------------------
-date2yeardec <- function(date){as.POSIXlt(date)$year+1900 + (as.POSIXlt(date)$yday)/365}
-yeardec2date <- function(yeardec){as.Date(strptime(paste(yeardec%/%1, ceiling(yeardec%%1*365+1), sep="-"), format="%Y-%j"))}
 
 make.inds <- function(
-	id=NaN, A = 1, L = 0, W=NaN, mat=0,
-	K = K.mu, Winf=NaN, Linf=NaN, phiprime=NaN,
-	F=NaN, Z=NaN, 
-	Fd=0, alive=1
+	id = NaN, A = 1, L = 0, W = NaN, mat = 0,
+	K = NaN, Winf = NaN, Linf = NaN, phiprime = NaN,
+	F = NaN, Z = NaN, 
+	Fd = 0, alive = 1
 ){
   inds <- data.frame(
     id = id,
     A = A,
     L = L,
     W = W,
-    Lmat=NaN,
+    Lmat = LWa*L^LWb,
     mat = mat,
     K = K,
     Linf = Linf,
@@ -208,12 +207,93 @@ make.inds <- function(
   return(inds)
 }
 
+equilibrium.inds <- function(){
+  params <- list(
+    amax = NULL,
+    growthFun = "growth_soVB",
+    K = K.mu,
+    Linf = Linf.mu,
+    t0 = 0,
+    ts = ts, 
+    C = C,
+    LWa = LWa, 
+    LWb = LWb,
+    L50 = L50,
+    wqs = wqs,
+    selectFun = "logisticSelect",
+    Lmat = Lmat, 
+    wmat = wmat,
+    matFun = "pmat_w",
+    M = M,
+    F = harvest_rate,
+    N0 = 1
+  )
+  
+  # calculate spawning biomass per recruit
+  CS <- cohortSim(params = params, t_incr = tincr)
+  SBrecr <- sum( CS$SBt*rep(repro_wt, length=length(CS$t)) )
+  
+  # estimate recruitment size (N0i) resulting in equilibrium
+  dN0i <- 1e6
+  N0i <- N0
+  while(sqrt(dN0i^2) > 1){
+    N0i2 <- round(srrBH(rmax = rmax, beta = beta, SB = SBrecr*N0i))
+    dN0i <- N0i2 - N0i
+    N0i <- N0i2
+  }
+  # SBrecr*N0i # spawning biomass
+  
+  recr.t <- seq(0, 1, by=tincr)
+  recr.t <- recr.t[-length(recr.t)]
+  indsi <- data.frame(
+    Linf = Linf.mu * rlnorm(n = N0i, meanlog = 0, sdlog = Linf.cv),
+    K = K.mu * rlnorm(n = N0i, meanlog = 0, sdlog = K.cv),
+    t0 = sample(recr.t-1, size = N0i, replace = T, prob = repro_wt)
+  )
+  indsi$C <- params$C
+  indsi$ts <- params$ts
+  
+  Ai <- NaN*seq(nrow(indsi))
+  Li <- NaN*seq(nrow(indsi))
+  for(j in seq(nrow(indsi))){
+    paramsi <- params
+    incl <- match(names(indsi), names(paramsi))
+    paramsi[incl] <- indsi[j,]
+    paramsi$t <- seq(1, CS$amax)
+  
+    # growth
+    args.incl <- which(names(paramsi) %in% names(formals(get(paramsi$growthFun))))
+    paramsi$Lt <- do.call(get(paramsi$growthFun), paramsi[args.incl])
+    
+    # selectivity
+    args.incl <- which(names(paramsi) %in% names(formals(get(paramsi$selectFun))))
+    paramsi$St <- do.call(get(paramsi$selectFun), paramsi[args.incl])
+  
+    # Mortality
+    paramsi$Zt <- paramsi$M + paramsi$F*paramsi$St
+    paramsi$pSurv <- exp(-paramsi$Zt*paramsi$t)
+    Ai[j] <- sample(paramsi$t, size = 1, prob = paramsi$pSurv)
+    Li[j] <- paramsi$Lt[Ai[j]]
+  }
+  
+  inds <- make.inds(
+    id = seq(N0i),
+    Linf = indsi$Linf,
+    K = indsi$K,
+    L = Li,
+    A = Ai
+  )
+  
+  return(inds)
+  
+}
+
 
 express.inds <- function(inds){
-  inds$Linf <- Linf.mu * rlnorm(nrow(inds), 0, Linf.cv)
-  inds$Winf <- LWa*inds$Linf^LWb
+  inds$Linf <- ifelse(is.na(inds$Linf), Linf.mu * rlnorm(nrow(inds), 0, Linf.cv), inds$Linf)
+  inds$K <- ifelse(is.na(inds$K), K.mu * rlnorm(nrow(inds), 0, K.cv), inds$K) 
   # inds$K <- 10^(phiprime.mu - 2*log10(inds$Linf)) * rlnorm(nrow(inds), 0, K.cv)
-  inds$K <- K.mu * rlnorm(nrow(inds), 0, K.cv)
+  inds$Winf <- LWa*inds$Linf^LWb
   inds$W <- LWa*inds$L^LWb
   inds$phiprime <- log10(inds$K) + 2*log10(inds$Linf)
   inds$Lmat <- rnorm(nrow(inds), mean=Lmat, sd=wmat/diff(qnorm(c(0.25, 0.75))))
@@ -314,9 +394,15 @@ record.inds <- function(inds, ids=1:10, rec=NULL){
 
 # Initial population
 lastID <- 0
-inds <- make.inds(
-  id=seq(N0)
-)
+
+if(initializePop){
+  inds <- equilibrium.inds()
+  inds$mat <- as.numeric(inds$L > inds$mat)
+} else {
+  inds <- make.inds(
+    id=seq(N0)
+  )
+}
 inds <- express.inds(inds)
 
 # results object

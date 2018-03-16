@@ -5,12 +5,13 @@
 \title{Virtual fish population}
 \usage{
 virtualPop(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
-  Linf.cv = 0.1, ts = 0, C = 0.85, LWa = 0.01, LWb = 3, Lmat = 40,
+  Linf.cv = 0.1, ts = 0.5, C = 0.75, LWa = 0.01, LWb = 3, Lmat = 40,
   wmat = 8, rmax = 10000, beta = 1, repro_wt = c(0, 0, 0, 1, 0, 0, 0, 0,
   0, 0, 0, 0), M = 0.7, harvest_rate = M, L50 = 0.25 * Linf.mu,
-  wqs = L50 * 0.2, bin.size = 1, timemin = 0, timemax = 20,
-  timemin.date = as.Date("1980-01-01"), N0 = 10000, fished_t = seq(17, 20,
-  tincr), lfqFrac = 1, progressBar = TRUE)
+  wqs = L50 * 0.2, bin.size = 1, timemin = 0, timemax = 10,
+  timemin.date = as.Date("1980-01-01"), N0 = 10000, initializePop = TRUE,
+  fished_t = seq(timemin, timemax, tincr), lfqFrac = 1,
+  progressBar = TRUE)
 }
 \arguments{
 \item{tincr}{time increment for simulation (default = 1/12; i.e. 1 month)}
@@ -59,6 +60,8 @@ virtualPop(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
 
 \item{N0}{starting number of individuals}
 
+\item{initializePop}{logical. Should initial population be approximated based on SRR equilibrium}
+
 \item{fished_t}{times when stock is fished}
 
 \item{lfqFrac}{fraction of fished stock that are sampled for length frequency data (default = 0.1).}
@@ -77,7 +80,7 @@ for more details.
 \examples{
 
 set.seed(1)
-res <- virtualPop()
+res <- virtualPop(initializePop = T, N0=10000)
 names(res)
 
 op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
@@ -98,6 +101,7 @@ summary(fit)
 newdat <- data.frame(L = seq(min(inds$L), max(inds$L), length.out=100))
 newdat$pmat <- pmat_w(newdat$L, Lmat = 40, wmat=40*0.2)
 pred <- predict(fit, newdata=newdat, se.fit=TRUE)
+
 # Combine the hypothetical data and predicted values
 newdat <- cbind(newdat, pred)
 # Calculate confidence intervals
