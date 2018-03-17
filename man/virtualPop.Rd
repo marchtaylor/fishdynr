@@ -9,8 +9,8 @@ virtualPop(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
   wmat = 8, rmax = 10000, beta = 1, repro_wt = c(0, 0, 0, 1, 0, 0, 0, 0,
   0, 0, 0, 0), M = 0.7, harvest_rate = M, L50 = 0.25 * Linf.mu,
   wqs = L50 * 0.2, bin.size = 1, timemin = 0, timemax = 10,
-  timemin.date = as.Date("1980-01-01"), N0 = 10000, initializePop = TRUE,
-  fished_t = seq(timemin, timemax, tincr), lfqFrac = 1,
+  timemin.date = as.Date("1980-01-01"), N0 = 5000, initializePop = TRUE,
+  fished_t = seq(timemin + 5, timemax, tincr), lfqFrac = 1,
   progressBar = TRUE)
 }
 \arguments{
@@ -60,7 +60,8 @@ virtualPop(tincr = 1/12, K.mu = 0.5, K.cv = 0.1, Linf.mu = 80,
 
 \item{N0}{starting number of individuals}
 
-\item{initializePop}{logical. Should initial population be approximated based on SRR equilibrium}
+\item{initializePop}{logical. Should initial population be approximated 
+based on SRR equilibrium}
 
 \item{fished_t}{times when stock is fished}
 
@@ -80,14 +81,14 @@ for more details.
 \examples{
 
 set.seed(1)
-res <- virtualPop(initializePop = T, N0=10000)
+res <- virtualPop(initializePop = T, rmax = 1e4)
 names(res)
 
 op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
-plot(N ~ dates, data=res$pop, t="l")
-plot(B ~ dates, data=res$pop, t="l", ylab="B, SSB")
+plot(N ~ dates, data=res$pop, t="l", ylim=c(0, max(N)))
+plot(B ~ dates, data=res$pop, t="l", ylim=c(0, max(B)), ylab="B, SSB")
 lines(SSB ~ dates, data=res$pop, t="l", lty=2)
-par(op)
+par(op) 
 
 pal <- colorRampPalette(c("grey30",5,7,2), bias=2)
 with(res$lfqbin, image(x=dates, y=midLengths, z=t(catch), col=pal(100)))

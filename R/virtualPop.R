@@ -23,7 +23,8 @@
 #' @param timemin.date date corresponding to timemin (of "Date" class)
 #' @param tincr time increment for simulation (default = 1/12; i.e. 1 month)
 #' @param N0 starting number of individuals
-#' @param initializePop logical. Should initial population be approximated based on SRR equilibrium
+#' @param initializePop logical. Should initial population be approximated 
+#' based on SRR equilibrium
 #' @param fished_t times when stock is fished
 #' @param lfqFrac fraction of fished stock that are sampled for length frequency data (default = 0.1).
 #' @param progressBar Logical. Should progress bar be shown in console (Default=TRUE)
@@ -55,7 +56,7 @@
 #' @examples
 #' 
 #' set.seed(1)
-#' res <- virtualPop(initializePop = T, N0=100)
+#' res <- virtualPop(initializePop = T, rmax = 1e4)
 #' names(res)
 #' 
 #' op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
@@ -151,9 +152,9 @@ M = 0.7, harvest_rate = M,
 L50 = 0.25*Linf.mu, wqs = L50*0.2,
 bin.size = 1,
 timemin = 0, timemax = 10, timemin.date = as.Date("1980-01-01"),
-N0 = 10000,
+N0 = 5000,
 initializePop = TRUE,
-fished_t = seq(timemin,timemax,tincr),
+fished_t = seq(timemin+5,timemax,tincr),
 lfqFrac = 1,
 progressBar = TRUE
 ){
@@ -232,14 +233,19 @@ equilibrium.inds <- function(){
   # calculate spawning biomass per recruit
   CS <- cohortSim(params = params, t_incr = tincr)
   SBrecr <- sum( CS$SBt*rep(repro_wt, length=length(CS$t)) )
+  params$amax <- CS$amax
   
   # estimate recruitment size (N0i) resulting in equilibrium
   dN0i <- 1e6
   N0i <- N0
+  tmp <- rep(NaN, 1e6)
+  counter <- 1
   while(sqrt(dN0i^2) > 1){
     N0i2 <- round(srrBH(rmax = rmax, beta = beta, SB = SBrecr*N0i))
     dN0i <- N0i2 - N0i
     N0i <- N0i2
+    tmp[counter] <- dN0i
+    counter <- counter + 1
   }
   # SBrecr*N0i # spawning biomass
   
@@ -253,13 +259,20 @@ equilibrium.inds <- function(){
   indsi$C <- params$C
   indsi$ts <- params$ts
   
-  Ai <- NaN*seq(nrow(indsi))
-  Li <- NaN*seq(nrow(indsi))
+  # improve vectorization later  
+  # indsi$A <- NaN
+  # indsi$L <- NaN
+  # 
+  # tmp <- lapply(seq(nrow(indsi)), function(x){params})
+  # paramsi <- as.data.frame(tmp)
+  
+  Ai <- NaN*seq(nrow(indsi)) # age
+  Li <- NaN*seq(nrow(indsi)) # length
   for(j in seq(nrow(indsi))){
     paramsi <- params
     incl <- match(names(indsi), names(paramsi))
     paramsi[incl] <- indsi[j,]
-    paramsi$t <- seq(1, CS$amax)
+    paramsi$t <- seq(0, CS$amax)-paramsi$t0
   
     # growth
     args.incl <- which(names(paramsi) %in% names(formals(get(paramsi$growthFun))))
@@ -272,9 +285,12 @@ equilibrium.inds <- function(){
     # Mortality
     paramsi$Zt <- paramsi$M + paramsi$F*paramsi$St
     paramsi$pSurv <- exp(-paramsi$Zt*paramsi$t)
-    Ai[j] <- sample(paramsi$t, size = 1, prob = paramsi$pSurv)
-    Li[j] <- paramsi$Lt[Ai[j]]
+    classi <- sample(seq(paramsi$t), size = 1, prob = paramsi$pSurv)
+    Ai[j] <- paramsi$t[classi]
+    Li[j] <- paramsi$Lt[classi]
   }
+  # hist(Li)
+  hist(Ai, breaks = seq(0, CS$amax+1))
   
   inds <- make.inds(
     id = seq(N0i),
@@ -397,13 +413,15 @@ lastID <- 0
 
 if(initializePop){
   inds <- equilibrium.inds()
-  inds$mat <- as.numeric(inds$L > inds$mat)
+  inds <- express.inds(inds)
+  inds$mat <- as.numeric(inds$L > inds$Lmat)
 } else {
   inds <- make.inds(
     id=seq(N0)
   )
+  inds <- express.inds(inds)
 }
-inds <- express.inds(inds)
+
 
 # results object
 res <- list()
