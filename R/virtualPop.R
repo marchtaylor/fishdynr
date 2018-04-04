@@ -56,7 +56,7 @@
 #' @examples
 #' 
 #' set.seed(1)
-#' res <- virtualPop(initializePop = T, rmax = 1e4)
+#' res <- virtualPop(initializePop = F, rmax = 1e4)
 #' names(res)
 #' 
 #' op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
@@ -259,12 +259,24 @@ equilibrium.inds <- function(){
   indsi$C <- params$C
   indsi$ts <- params$ts
   
-  # improve vectorization later  
-  # indsi$A <- NaN
-  # indsi$L <- NaN
+  # # improve vectorization later
+  # paramsi <- as.data.frame(params, stringsAsFactors = F)
+  # for(i in seq(ncol(paramsi))){
+  #   if(!names(params)[i] %in% names(indsi)){indsi[names(params)[i]] <- paramsi[,i]}
+  # }
+  # head(indsi)
   # 
-  # tmp <- lapply(seq(nrow(indsi)), function(x){params})
-  # paramsi <- as.data.frame(tmp)
+  # indsi.list <- split(indsi, seq(nrow(indsi)))
+  # 
+  # indsi.list <- lapply(indsi.list, function(x){as.list(x)})
+  # inds.list <- apply(indsi, 1, function(x){as.list(x)})
+  # inds.list[[1]]
+  # 
+  # 
+  # as.list(indsi.list[[1]])
+  # 
+  # times <- apply(indsi, function(x){seq(0, CS$amax)-as.numeric(x["t0"])})
+
   
   Ai <- NaN*seq(nrow(indsi)) # age
   Li <- NaN*seq(nrow(indsi)) # length
