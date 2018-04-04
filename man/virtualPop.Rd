@@ -81,7 +81,7 @@ for more details.
 \examples{
 
 set.seed(1)
-res <- virtualPop(initializePop = T, rmax = 1e4)
+res <- virtualPop(initializePop = TRUE, rmax = 1e4)
 names(res)
 
 op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
