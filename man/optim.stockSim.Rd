@@ -4,8 +4,8 @@
 \alias{optim.stockSim}
 \title{Optimization of fishing mortality}
 \usage{
-optim.stockSim(Ft = 0, params, nyears = 100, env_at = 1, env_bt = 1,
-  opt = "sum", disc.rate = 0.02)
+optim.stockSim(Ft = 0, params, nyears = 100, env_at = 1,
+  env_bt = 1, opt = "sum", disc.rate = 0.02)
 }
 \arguments{
 \item{Ft}{time series vector for fishing mortality. If a single value, then
@@ -39,7 +39,6 @@ time series yield, \code{Yt}). The routine is described in further detail in
 Walters and Martell (2004).
 }
 \examples{
-\donttest{
 set.seed(1)
 data(tilapia)
 params <- tilapia
@@ -88,7 +87,6 @@ plot(Yt ~ t, tmp, col=2, t="l", axes=FALSE, xlab="", ylab="")
 axis(4, col=2)
 mtext("Yt", side=4, line=3, col=2)
 par(op)
-}
 
 }
 \references{

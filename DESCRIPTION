@@ -11,4 +11,4 @@ Description: Contains functions for describing fish growth, mortality,
 License: GPL-3
 BugReports: https://github.com/marchtaylor/fishdynr/issues
 URL: https://github.com/marchtaylor/fishdynr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

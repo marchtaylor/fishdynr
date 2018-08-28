@@ -27,7 +27,6 @@
 #' Fisheries ecology and management. Princeton University Press.
 #'   
 #' @examples
-#' \donttest{
 #' set.seed(1)
 #' data(tilapia)
 #' params <- tilapia
@@ -76,7 +75,6 @@
 #' axis(4, col=2)
 #' mtext("Yt", side=4, line=3, col=2)
 #' par(op)
-#' }
 #' 
 #' @export
 #' 

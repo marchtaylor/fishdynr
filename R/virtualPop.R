@@ -23,8 +23,6 @@
 #' @param timemin.date date corresponding to timemin (of "Date" class)
 #' @param tincr time increment for simulation (default = 1/12; i.e. 1 month)
 #' @param N0 starting number of individuals
-#' @param initializePop logical. Should initial population be approximated 
-#' based on SRR equilibrium
 #' @param fished_t times when stock is fished
 #' @param lfqFrac fraction of fished stock that are sampled for length frequency data (default = 0.1).
 #' @param progressBar Logical. Should progress bar be shown in console (Default=TRUE)
@@ -56,7 +54,7 @@
 #' @examples
 #' 
 #' set.seed(1)
-#' res <- virtualPop(initializePop = TRUE, rmax = 1e4)
+#' res <- virtualPop(rmax = 1e4)
 #' names(res)
 #' 
 #' op <- par(mfcol=c(2,1), mar=c(4,4,1,1))
@@ -153,7 +151,6 @@ L50 = 0.25*Linf.mu, wqs = L50*0.2,
 bin.size = 1,
 timemin = 0, timemax = 10, timemin.date = as.Date("1980-01-01"),
 N0 = 5000,
-initializePop = TRUE,
 fished_t = seq(timemin+5,timemax,tincr),
 lfqFrac = 1,
 progressBar = TRUE
@@ -423,16 +420,16 @@ record.inds <- function(inds, ids=1:10, rec=NULL){
 # Initial population
 lastID <- 0
 
-if(initializePop){
-  inds <- equilibrium.inds()
-  inds <- express.inds(inds)
-  inds$mat <- as.numeric(inds$L > inds$Lmat)
-} else {
+# if(initializePop){
+#   inds <- equilibrium.inds()
+#   inds <- express.inds(inds)
+#   inds$mat <- as.numeric(inds$L > inds$Lmat)
+# } else {
   inds <- make.inds(
     id=seq(N0)
   )
   inds <- express.inds(inds)
-}
+# }
 
 
 # results object
